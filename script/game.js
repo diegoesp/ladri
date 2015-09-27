@@ -15,6 +15,31 @@ var Game = function(canvas)
 	this.actors = [];
 	this.actors.push(this.pad);
 	this.actors.push(this.ball);
+
+	// Create bricks for the player to bust. We start at the upper left corner
+	// and then iterate through each line until we have all the bricks
+	var x = 12.5;
+	var y = 10;
+	var colors = Brick.colors();
+
+	for(var i = 0; i < 8; i++)
+	{
+		var color = colors.pop();
+
+		for (var j = 0; j < 9; j++)
+		{
+			var brick = new Brick(x, y, color);
+			this.actors.push(brick);
+
+			// Next brick in line
+			x += (brick.width + 12.5);
+		}
+
+		// Next line
+		x = 12.5;
+		y += 30;
+	}
+
 }
 
 // Starts the game loop
@@ -61,12 +86,11 @@ Game.prototype.draw = function(game)
 	// Empty the canvas
 	context.clearRect(0, 0, game.width(), game.height());
 
-	game.pad.draw(context);
-
 	var ball = game.ball;
 	if (ball.isAtScreenEdgeX(game)) ball.speedX = -ball.speedX;
 	if (ball.isAtScreenEdgeY(game)) ball.speedY = -ball.speedY;
-	
+	game.ball.move();
+
 	// Check for collisions
 	var collisions = ball.collisions(game);
 	if (collisions.length > 0)
@@ -76,8 +100,14 @@ Game.prototype.draw = function(game)
 		if (collision.y) ball.speedY = -ball.speedY;
 	}
 
-	game.ball.move();
-	game.ball.draw(context);
+	// Draw the actors
+	var actors = game.actors;
+	for(var i = 0; i < actors.length; i++) actors[i].draw(context);
+
+	// Draw the score
+	context.font = "12pt Arial";
+	context.fillStyle = "green";
+	context.fillText("Score: 0", 10, 590);
 
 	/*
 	// Draw an indestructible triangle brick that blocks the ball	
@@ -88,9 +118,4 @@ Game.prototype.draw = function(game)
 	context.closePath();
 	context.stroke();
 	*/
-
-	// Score
-	context.font = "12pt Arial";
-	context.fillStyle = "green";
-	context.fillText("Score: 0", 10, 590);
 }
