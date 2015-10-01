@@ -34,48 +34,14 @@ Actor.prototype.collisions = function(game)
 		// Avoid a collision with myself :)
 		if (actor !== this)
 		{
-			// Very simple and basic box-based collision algorithm. Based on 8 different
-			// possible collisions: upper-left, up, upper-right, right,
-			// bottom-right, down, bottom-left and left.
+			var collidesWith = this.collidesWith(actor);
 
-			var collisionX = false;
-			var collisionY = false;
-
-			// All "uppers" have to validate if Y has been touched from the up-side and...
-			// All "bottoms" have to validate if Y has been touched from the downside
-			if ((this.y <= actor.y && this.yHeight() >= actor.y) || (this.y <= actor.yHeight() && this.yHeight() >= actor.yHeight()))
-			{
-				// Possibility of upper or bottom collision
-
-				// Upper-left
-				if (this.x <= actor.x && this.xWidth() >= actor.x) collisionY = true;
-				// Up
-				if (this.x >= actor.x && this.xWidth() <= actor.xWidth()) collisionY = true;
-				// Upper-right
-				if (this.x <= actor.xWidth() && this.xWidth() >= actor.yHeight()) collisionY = true;
-			}
-
-			// We only have two cases to check: right collision, or left collision. Those
-			// two have to validate if the object is vertically included in the other object
-			if (this.y >= actor.y && this.yHeight() <= actor.yHeight())
-			{
-				// Possibility of left or right collision
-
-				// Right collision
-				if (this.y >= actor.y && this.yHeight <= actor.yHeight())
-					collisionX = true;
-
-				// Left collision
-				if (this.x <= actor.x && this.xWidth >= actor.x)				
-						collisionX = true;
-			}
-
-			if (collisionX || collisionY) 
+			if (collidesWith.collision)
 			{
 				collision = {
 					actor: actor,
-					x: collisionX,
-					y: collisionY
+					x: collidesWith.collisionX,
+					y: collidesWith.collisionY
 				}
 				
 				collisions.push(collision);
@@ -84,6 +50,50 @@ Actor.prototype.collisions = function(game)
 	}
 
 	return collisions;
+}
+
+
+// Box-based collision algorithm. Based on 4 different
+// possible collisions: up, right, bottom, and left.
+//
+// Returns a hash with three elements: collision, collisionX and collisionY:
+//
+// collision: boolean, if true a collision happened
+// collisionX: boolean, if true then the collision is on direction X. Useful if the object must bounce.
+// collisionY: boolean, if true then the collision is on direction Y. Useful if the object must bounce.
+//
+Actor.prototype.collidesWith = function(actor)
+{
+	var collisionX = false;
+	var collisionY = false;
+
+	// Four possible cases
+
+	// Case 1
+	// Collision from the upper part
+	if (this.x >= actor.x && this.x <= actor.xWidth())
+		if (this.yHeight() >= actor.y && this.yHeight() <= actor.yHeight())
+			collisionY = true;
+
+		// Case 2
+		// Collision from the right
+		if (this.y >= actor.y && this.yHeight() <= actor.yHeight())
+			if (this.x >= actor.x && this.x <= actor.xWidth())
+				collisionX = true;
+
+		// Case 3
+		// Collsion from the bottom
+		if (this.x >= actor.x && this.x <= actor.xWidth())
+			if (this.y >= actor.y && this.y <= actor.yHeight())
+				collisionY = true;
+
+		// Case 4
+		// Collision from the left
+		if (this.y >= actor.y && this.yHeight() <= actor.yHeight())
+			if (this.xWidth() >= actor.x && this.xWidth() <= actor.xWidth())
+				collisionX = true;
+
+		return { collision: (collisionX || collisionY), collisionX: collisionX, collisionY: collisionY };
 }
 
 Actor.prototype.xWidth = function()

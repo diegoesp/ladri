@@ -5,12 +5,15 @@
 //
 // canvas: holds the canvas for drawing
 // pad: our hero!
+// ball: well... the ball
+// score: score for the game
 // actors: a collection that holds all characters in the game (i.e. things that can collision with each other)
 var Game = function(canvas)
 {
 	this.canvas = canvas;
 	this.pad = new Pad();
 	this.ball = new Ball();
+	this.score = 0;
 
 	this.actors = [];
 	this.actors.push(this.pad);
@@ -100,6 +103,27 @@ Game.prototype.draw = function(game)
 		if (collision.y) ball.speedY = -ball.speedY;
 	}
 
+	// Review if a collision to a brick happened. If that is the case
+	// we have to take a brick out and add a score
+	for(var i = 0; i < collisions.length; i++)
+	{
+		var collision = collisions[i];
+		var actor = collision.actor;
+		if (actor instanceof Brick)
+		{
+			var index = game.actors.indexOf(actor);
+			if (index < 0)
+			{
+				console.log("Error!: busted brick could not be found as an actor");
+			}
+			else
+			{
+				game.actors.splice(index, 1);
+				game.score += 100;
+			}
+		}
+	}
+
 	// Draw the actors
 	var actors = game.actors;
 	for(var i = 0; i < actors.length; i++) actors[i].draw(context);
@@ -107,7 +131,7 @@ Game.prototype.draw = function(game)
 	// Draw the score
 	context.font = "12pt Arial";
 	context.fillStyle = "green";
-	context.fillText("Score: 0", 10, 590);
+	context.fillText("Score: " + game.score, 10, 590);
 
 	/*
 	// Draw an indestructible triangle brick that blocks the ball	
