@@ -7,7 +7,7 @@ var Brick = function(x, y, color)
 	this.width = 75;
 	this.height = 20;
 	this.color = color;
-}
+};
 
 // Brick inherits from Actor
 Brick.prototype = Object.create(Actor.prototype);
@@ -33,10 +33,10 @@ Brick.colors = function()
 	colors.push("rgb(127, 127, 127)");	// grey
 
 	return colors;
-}
+};
 
 Brick.prototype.draw = function(context)
 {
 	context.fillStyle = this.color;
 	context.fillRect(this.x, this.y, this.width, this.height);
-}
+};

@@ -10,7 +10,7 @@ var Actor = function()
 	this.y = 0;
 	this.width = 0;
 	this.height = 0;
-}
+};
 
 // Checks if this actor is in collision with other actors in the game. It returns
 // an array with the list of collisions. If the array is empty, there's no collisions.
@@ -42,7 +42,7 @@ Actor.prototype.collisions = function(game)
 					actor: actor,
 					x: collidesWith.collisionX,
 					y: collidesWith.collisionY
-				}
+				};
 				
 				collisions.push(collision);
 			}
@@ -50,7 +50,7 @@ Actor.prototype.collisions = function(game)
 	}
 
 	return collisions;
-}
+};
 
 
 // Box-based collision algorithm. Based on 4 different
@@ -94,31 +94,36 @@ Actor.prototype.collidesWith = function(actor)
 				collisionX = true;
 
 		return { collision: (collisionX || collisionY), collisionX: collisionX, collisionY: collisionY };
-}
+};
 
 Actor.prototype.xWidth = function()
 {
 	return (this.x + this.width);
-}
+};
 
 Actor.prototype.yHeight = function()
 {
 	return (this.y + this.height);
-}
+};
 
-// Checks if this actor is touhing one of the screens edge. Returns a boolean.
+// Checks if this actor is touching one of the screens edge. Returns a boolean.
 Actor.prototype.isAtScreenEdgeX = function(game)
 {
 	if (this.x <= 0) return true;
 	if (this.x >= game.width()) return true;
 
 	return false;
-}
+};
 
 Actor.prototype.isAtScreenEdgeY = function(game)
 {
-	if (this.y <= 0) return true;
-	if (this.y >= game.height()) return true;
+	if (this.y <= 0) return true;	
+	return this.isAtScreenBottom(game);
+};
 
+// Checks if the user is touching the bottom of the screen. Returns a boolean
+Actor.prototype.isAtScreenBottom = function(game)
+{
+	if (this.y >= game.height()) return true;
 	return false;
-}
+};

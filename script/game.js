@@ -6,18 +6,28 @@
 // canvas: holds the canvas for drawing
 // pad: our hero!
 // ball: well... the ball
+// keyboard: a Keyboard controller, so we know what is pressed inside the game loop
+// mouse: a Mouse controller, so we can handle the pad with the mouse
 // score: score for the game
 // actors: a collection that holds all characters in the game (i.e. things that can collision with each other)
+// lives: chances for the player
+// timer: holds the setInterval timer for the game loop
 var Game = function(canvas)
 {
 	this.canvas = canvas;
 	this.pad = new Pad();
 	this.ball = new Ball();
+	this.keyboard = new Keyboard();
+	this.mouse = new Mouse();
 	this.score = 0;
+	this.lives = 2;
 
 	this.actors = [];
 	this.actors.push(this.pad);
 	this.actors.push(this.ball);
+
+	// Hide the cursor inside the canvas.
+	//canvas.style.cursor = "none";
 
 	// Create bricks for the player to bust. We start at the upper left corner
 	// and then iterate through each line until we have all the bricks
@@ -42,57 +52,39 @@ var Game = function(canvas)
 		x = 12.5;
 		y += 30;
 	}
-
-}
+};
 
 // Starts the game loop
 Game.prototype.startLoop = function()
 {
-	this.loop = window.setInterval(this.draw, 15, this);
+	this.timer = window.setInterval(this.loop, 5, this);
 	this.canvas.parentNode.addEventListener("keydown", this, true);
-}
+	this.canvas.parentNode.addEventListener("keyup", this, true);
+	this.canvas.parentNode.addEventListener("mousemove", this, true);
+};
 
-Game.prototype.stopLoop = function()
+// The game loop! good ol' times :D
+Game.prototype.loop = function(game)
 {
-	window.clearInterval(this.loop);
-}
+	// First we do all the cool math and processing to prepare us to draw
+	// stuff on the screen
 
-Game.prototype.width = function()
-{
-	return this.canvas.width;
-}
-
-Game.prototype.height = function()
-{
-	return this.canvas.height;
-}
-
-// Event handler for the game object. Redirects to the correspondent event
-// handler type
-Game.prototype.handleEvent = function(event)
-{
-	switch(event.type)
-	{
-		case "keydown":
-		{
-			this.pad.handleKeyboard(event, this);
-			break;
-		}
-	}
-}
-
-// Draws a game frame
-Game.prototype.draw = function(game)
-{
-	var context = game.canvas.getContext("2d");
-
-	// Empty the canvas
-	context.clearRect(0, 0, game.width(), game.height());
+	// Move the pad
+	game.pad.move(game);
 
 	var ball = game.ball;
+
+	// Check if the user lost a life?
+	if (ball.isAtScreenBottom(game))
+	{
+		game.lives--;
+		ball.reset();
+	}
+
+	// Check if the ball is touching screen edges
 	if (ball.isAtScreenEdgeX(game)) ball.speedX = -ball.speedX;
 	if (ball.isAtScreenEdgeY(game)) ball.speedY = -ball.speedY;
-	game.ball.move();
+	ball.move();
 
 	// Check for collisions
 	var collisions = ball.collisions(game);
@@ -107,8 +99,7 @@ Game.prototype.draw = function(game)
 	// we have to take a brick out and add a score
 	for(var i = 0; i < collisions.length; i++)
 	{
-		var collision = collisions[i];
-		var actor = collision.actor;
+		var actor = collisions[i].actor;
 		if (actor instanceof Brick)
 		{
 			var index = game.actors.indexOf(actor);
@@ -124,22 +115,87 @@ Game.prototype.draw = function(game)
 		}
 	}
 
+	// We finished calculations. Now we have to draw.
+	game.draw(game);
+};
+
+Game.prototype.stopLoop = function()
+{
+	window.clearInterval(this.timer);
+};
+
+Game.prototype.width = function()
+{
+	return this.canvas.width;
+};
+
+Game.prototype.height = function()
+{
+	return this.canvas.height;
+};
+
+Game.prototype.handleEvent = function(event)
+{
+	// Fills the keyboard status object
+	switch(event.type)
+	{
+		case "keydown":
+		{
+			this.keyboard.keyDown(event);
+			break;
+		}
+		case "keyup":
+		{
+			this.keyboard.keyUp(event);
+			break;
+		}
+		case "mousemove":
+		{
+			this.mouse.mouseMove(event);
+		}
+	}
+};
+
+// Draws a game frame
+Game.prototype.draw = function(game)
+{
+	var context = game.canvas.getContext("2d");
+
+	// If game is over... then game is over! :D
+	if (game.lives < 0)
+	{
+		game.drawOver(game, context);
+		game.stopLoop();
+		return;
+	}
+
+	// Empty the canvas
+	context.clearRect(0, 0, game.width(), game.height());
+
 	// Draw the actors
 	var actors = game.actors;
-	for(var i = 0; i < actors.length; i++) actors[i].draw(context);
+	for(var j = 0; j < actors.length; j++) actors[j].draw(context);
+
+	game.drawHud(game, context);
+};
+
+Game.prototype.drawHud = function(game, context)
+{
+	context.fillStyle = "green";
+	context.font = "12pt Arial";
 
 	// Draw the score
-	context.font = "12pt Arial";
-	context.fillStyle = "green";
 	context.fillText("Score: " + game.score, 10, 590);
 
-	/*
-	// Draw an indestructible triangle brick that blocks the ball	
-	context.beginPath();
-	context.moveTo(600, 400);
-	context.lineTo(700, 350);
-	context.lineTo(700, 400);
-	context.closePath();
-	context.stroke();
-	*/
-}
+	// Draw lives
+	context.fillText("Lives: " + game.lives, 150, 590);
+};
+
+Game.prototype.drawOver = function(game, context)
+{
+	context.font = "20pt Arial";
+	context.fillText("Game Over :(", 310, 200);
+
+	context.font = "14pt Arial";
+	context.fillText("Refresh to play again!", 300, 500);
+};
