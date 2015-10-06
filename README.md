@@ -21,8 +21,7 @@ Use your keyboard or mouse to move the pad.
 
 # Other considerations
 
-* Supports both timer and requestAnimationFrame but I've found that, at this point,
-* the timer approach yields better animation performance with most browsers.
+* Supports both timer and requestAnimationFrame (using a polyfill). I'm still choosing the timer approach as my favorite as it is more flexible, cleaner from a code perspective, stable, and works with most browsers.
 
 # Upcoming features
 
