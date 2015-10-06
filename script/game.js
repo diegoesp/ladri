@@ -1,7 +1,4 @@
-// The game class holds the game itself and coordinates
-// the game loop. Requires a canvas to draw the game.
-//
-// Instance variables:
+// Our game. Holds the following class variables:
 //
 // canvas: holds the canvas for drawing
 // pad: our hero!
@@ -12,11 +9,12 @@
 // actors: a collection that holds all characters in the game (i.e. things that can collision with each other)
 // lives: chances for the player
 // timer: holds the setInterval timer for the game loop
+// screen: Useful class for responsive screen purposes
 var Game = function(canvas)
 {
 	this.canvas = canvas;
-	this.pad = new Pad();
-	this.ball = new Ball();
+	this.pad = new Pad(this);
+	this.ball = new Ball(this);
 	this.keyboard = new Keyboard();
 	this.mouse = new Mouse();
 	this.score = 0;
@@ -27,7 +25,7 @@ var Game = function(canvas)
 	this.actors.push(this.ball);
 
 	// Hide the cursor inside the canvas.
-	//canvas.style.cursor = "none";
+	this.canvas.style.cursor = "none";
 
 	// Create bricks for the player to bust. We start at the upper left corner
 	// and then iterate through each line until we have all the bricks
@@ -41,7 +39,7 @@ var Game = function(canvas)
 
 		for (var j = 0; j < 9; j++)
 		{
-			var brick = new Brick(x, y, color);
+			var brick = new Brick(this, x, y, color);
 			this.actors.push(brick);
 
 			// Next brick in line
@@ -52,42 +50,62 @@ var Game = function(canvas)
 		x = 12.5;
 		y += 30;
 	}
+
+	// Adjust canvas to fit all the window
+	var game = this;
+	window.onresize = function() { game.adjustCanvas(); };
+	this.adjustCanvas();
+
+	// Cache the context
+	this.cachedContext = this.canvas.getContext("2d");
+};
+
+Game.prototype.adjustCanvas = function()
+{
+	var scale = ScreenScaler.scale(this);
+	this.canvas.style.width = scale.width + "px";
+	this.canvas.style.height = scale.height + "px";
 };
 
 // Starts the game loop
 Game.prototype.startLoop = function()
 {
-	this.timer = window.setInterval(this.loop, 5, this);
+	var game = this;
+
+	this.timer = window.setInterval(function() {
+		game.loop();
+	}, 5);
+
 	this.canvas.parentNode.addEventListener("keydown", this, true);
 	this.canvas.parentNode.addEventListener("keyup", this, true);
 	this.canvas.parentNode.addEventListener("mousemove", this, true);
 };
 
 // The game loop! good ol' times :D
-Game.prototype.loop = function(game)
+Game.prototype.loop = function()
 {
 	// First we do all the cool math and processing to prepare us to draw
 	// stuff on the screen
 
 	// Move the pad
-	game.pad.move(game);
+	this.pad.move(this);
 
-	var ball = game.ball;
+	var ball = this.ball;
 
 	// Check if the user lost a life?
-	if (ball.isAtScreenBottom(game))
+	if (ball.isAtScreenBottom(this))
 	{
-		game.lives--;
+		this.lives--;
 		ball.reset();
 	}
 
 	// Check if the ball is touching screen edges
-	if (ball.isAtScreenEdgeX(game)) ball.speedX = -ball.speedX;
-	if (ball.isAtScreenEdgeY(game)) ball.speedY = -ball.speedY;
+	if (ball.isAtScreenEdgeX(this)) ball.speedX = -ball.speedX;
+	if (ball.isAtScreenEdgeY(this)) ball.speedY = -ball.speedY;
 	ball.move();
 
 	// Check for collisions
-	var collisions = ball.collisions(game);
+	var collisions = ball.collisions(this);
 	if (collisions.length > 0)
 	{
 		var collision = collisions[0];
@@ -102,21 +120,21 @@ Game.prototype.loop = function(game)
 		var actor = collisions[i].actor;
 		if (actor instanceof Brick)
 		{
-			var index = game.actors.indexOf(actor);
+			var index = this.actors.indexOf(actor);
 			if (index < 0)
 			{
 				console.log("Error!: busted brick could not be found as an actor");
 			}
 			else
 			{
-				game.actors.splice(index, 1);
-				game.score += 100;
+				this.actors.splice(index, 1);
+				this.score += 100;
 			}
 		}
 	}
 
 	// We finished calculations. Now we have to draw.
-	game.draw(game);
+	this.draw();
 };
 
 Game.prototype.stopLoop = function()
@@ -156,43 +174,53 @@ Game.prototype.handleEvent = function(event)
 	}
 };
 
-// Draws a game frame
-Game.prototype.draw = function(game)
+// Gets a context for drawing
+Game.prototype.context = function()
 {
-	var context = game.canvas.getContext("2d");
+	return this.cachedContext;
+}
+
+// Draws a game frame
+Game.prototype.draw = function()
+{
+	var context = this.context();
 
 	// If game is over... then game is over! :D
-	if (game.lives < 0)
+	if (this.lives < 0)
 	{
-		game.drawOver(game, context);
-		game.stopLoop();
+		this.drawOver();
+		this.stopLoop();
 		return;
 	}
 
 	// Empty the canvas
-	context.clearRect(0, 0, game.width(), game.height());
+	context.clearRect(0, 0, this.width(), this.height());
 
 	// Draw the actors
-	var actors = game.actors;
+	var actors = this.actors;
 	for(var j = 0; j < actors.length; j++) actors[j].draw(context);
 
-	game.drawHud(game, context);
+	this.drawHud();
 };
 
-Game.prototype.drawHud = function(game, context)
+Game.prototype.drawHud = function()
 {
+	var context = this.context();
+
 	context.fillStyle = "green";
 	context.font = "12pt Arial";
 
 	// Draw the score
-	context.fillText("Score: " + game.score, 10, 590);
+	context.fillText("Score: " + this.score, 10, 590);
 
 	// Draw lives
-	context.fillText("Lives: " + game.lives, 150, 590);
+	context.fillText("Lives: " + this.lives, 150, 590);
 };
 
-Game.prototype.drawOver = function(game, context)
+Game.prototype.drawOver = function()
 {
+	var context = this.context();
+
 	context.font = "20pt Arial";
 	context.fillText("Game Over :(", 310, 200);
 

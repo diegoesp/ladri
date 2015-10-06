@@ -1,12 +1,14 @@
 // A new brick for the player to bust! must specify x position,
 // y position and color (rgb)
-var Brick = function(x, y, color)
+var Brick = function(game, x, y, color)
 {
 	this.x = x;
 	this.y = y;
 	this.width = 75;
 	this.height = 20;
 	this.color = color;
+
+	this.game = game;
 };
 
 // Brick inherits from Actor
@@ -35,8 +37,10 @@ Brick.colors = function()
 	return colors;
 };
 
-Brick.prototype.draw = function(context)
+Brick.prototype.draw = function()
 {
+	var context = this.game.context();
+
 	context.fillStyle = this.color;
 	context.fillRect(this.x, this.y, this.width, this.height);
 };

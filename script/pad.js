@@ -1,20 +1,27 @@
 // Our hero!! The pad that hits the ball
-var Pad = function()
+var Pad = function(game)
 {
 	this.x = 320;
 	this.y = 530;
 	this.width = 150;
 	this.height = 20;
 	this.speedX = 5;
+
+	this.game = game;
 };
 
 // Pad inherits from Actor
 Pad.prototype = Object.create(Actor.prototype);
 Pad.prototype.constructor = Pad;
 
-Pad.prototype.draw = function(context)
+Pad.prototype.draw = function()
 {
+	var context = this.game.context();
+
 	context.fillStyle = "black";
+
+	var screen = this.game.screen;
+
 	context.fillRect(this.x, this.y, this.width, this.height);
 };
 

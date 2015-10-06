@@ -1,7 +1,9 @@
 // Use the ball to bust bricks!
-var Ball = function()
+var Ball = function(game)
 {
 	this.reset();
+
+	this.game = game;
 };
 
 // Ball inherits from Actor
@@ -16,19 +18,21 @@ Ball.prototype.reset = function()
 	this.speedY = -1.5;
 };
 
-Ball.prototype.draw = function(context)
+Ball.prototype.draw = function()
 {
 	var radius = 7.5;
 	var initialAngle = 0;
 	var finalAngle = Math.PI * 2;
 	var antiClockwise = true;
 
+	var context = this.game.context();
+
 	context.beginPath();
 	context.arc(this.x, this.y, radius, initialAngle, finalAngle, antiClockwise);
 	context.closePath();
 	context.fill();
 
-	// All actors ahve width and height for collision calculations
+	// All actors have width and height for collision calculations
 	this.width = 15;
 	this.height = 15;
 };

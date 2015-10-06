@@ -1,11 +1,12 @@
 # Ladri
-A Javascript / HTML5 / CSS3 arkanoid simple clone.
+A minimalistic Javascript / HTML5 / CSS3 arkanoid clone.
 
 # Nice features
 
 * 100% pure HTML/JS. Runs on your browser, supplied by your filesystem. You don't even need a web server.
 * Keyboard support
 * Mouse support
+* Game scales to any possible screen resolution.
 
 # Why?
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
@@ -19,7 +20,6 @@ Use your keyboard or mouse to move the pad.
 
 # Upcoming features
 
-* Make game responsive
 * Migrate to requestAnimationFrame
 * Add sounds
 * Add leveling
