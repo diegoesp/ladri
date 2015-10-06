@@ -14,8 +14,8 @@ Ball.prototype.reset = function()
 {
 	this.x = 380;
 	this.y = 480;
-	this.speedX = -1.5;
-	this.speedY = -1.5;
+	this.speedX = -3.5;
+	this.speedY = -3.5;
 };
 
 Ball.prototype.draw = function()

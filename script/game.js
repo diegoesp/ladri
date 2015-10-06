@@ -84,9 +84,11 @@ Game.prototype.startLoop = function()
 {
 	var game = this;
 
-	this.timer = window.setInterval(function() {
-		game.loop();
-	}, 5);
+	// Using a timer
+	this.timer = window.setInterval(function() { game.loop(); }, 15);
+
+	// Using requestAnimationFrame
+	// window.requestAnimationFrame(function() { game.loop(); });
 
 	this.canvas.parentNode.addEventListener("keydown", this, true);
 	this.canvas.parentNode.addEventListener("keyup", this, true);
@@ -148,11 +150,19 @@ Game.prototype.loop = function()
 
 	// We finished calculations. Now we have to draw.
 	this.draw();
+
+
+	// var game = this;
+	// window.requestAnimationFrame(function() { game.loop(); });
 };
 
 Game.prototype.stopLoop = function()
 {
+	// Using a custom timer
 	window.clearInterval(this.timer);
+
+	// Using requestAnimationFrame
+	// window.cancelAnimationFrame();
 };
 
 Game.prototype.width = function()

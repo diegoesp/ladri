@@ -19,9 +19,13 @@ It is also a reference implementation for a simple game HTML5 game framework cal
 Just pull the repository into a directory and open index.html using a browser. Simple! don't you just love HTML?
 Use your keyboard or mouse to move the pad.
 
+# Other considerations
+
+* Supports both timer and requestAnimationFrame but I've found that, at this point,
+* the timer approach yields better animation performance with most browsers.
+
 # Upcoming features
 
-* Migrate to requestAnimationFrame
 * Add sounds
 * Add leveling
 * Add a simple level designer

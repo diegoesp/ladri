@@ -5,7 +5,7 @@ var Pad = function(game)
 	this.y = 530;
 	this.width = 150;
 	this.height = 20;
-	this.speedX = 5;
+	this.speedX = 10;
 
 	this.game = game;
 };
