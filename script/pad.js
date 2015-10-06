@@ -31,9 +31,13 @@ Pad.prototype.move = function(game)
 	if (keyboard.keyMap().cursorLeft) this.x -= this.speedX;
 	if (keyboard.keyMap().cursorRight) this.x += this.speedX;
 
-	var mouseMap = game.mouse.mouseMap();
+	var mouseMap = game.mouse.map();
 	if (mouseMap.left) this.x -= this.speedX;
 	if (mouseMap.right) this.x += this.speedX;
+
+	var touchMap = game.touch.map();
+	if (touchMap.left) this.x -= this.speedX;
+	if (touchMap.right) this.x += this.speedX;
 
 	// The pad must not go out of the screen
 	if (this.x < 0) this.x = 0;

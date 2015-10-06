@@ -6,6 +6,7 @@ A minimalistic Javascript / HTML5 / CSS3 arkanoid clone.
 * 100% pure HTML/JS. Runs on your browser, supplied by your filesystem. You don't even need a web server.
 * Keyboard support
 * Mouse support
+* Touch screen support (try it from your phone or tablet)
 * Game scales to any possible screen resolution.
 
 # Why?

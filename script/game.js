@@ -13,22 +13,49 @@
 var Game = function(canvas)
 {
 	this.canvas = canvas;
-	this.pad = new Pad(this);
-	this.ball = new Ball(this);
+	
+	// Input methods (player can use keyboard, mouse or touchscreen)
 	this.keyboard = new Keyboard();
 	this.mouse = new Mouse();
+	this.touch = new Touch();
+
 	this.score = 0;
 	this.lives = 2;
+
+	// My two featured characters :)
+	this.pad = new Pad(this);
+	this.ball = new Ball(this);
 
 	this.actors = [];
 	this.actors.push(this.pad);
 	this.actors.push(this.ball);
+	this.createBricks();
 
-	// Hide the cursor inside the canvas.
+	// Hide the mouse cursor inside the canvas.
 	this.canvas.style.cursor = "none";
 
-	// Create bricks for the player to bust. We start at the upper left corner
-	// and then iterate through each line until we have all the bricks
+	// Adjust canvas to fit present window...
+	this.resizeCanvas();
+	// ... and ask the window to resize it whenever the window changes
+	var game = this;
+	window.onresize = function() { game.resizeCanvas(); };
+
+	// Cache the context
+	this.cachedContext = this.canvas.getContext("2d");
+};
+
+Game.prototype.resizeCanvas = function()
+{
+	var scale = ScreenScaler.scale(this);
+	this.canvas.style.width = scale.width + "px";
+	this.canvas.style.height = scale.height + "px";
+};
+
+// Create bricks for the player to bust. We start at the upper left corner
+// and then iterate through each line until we have all the bricks.
+// We will probably replace this for a level creator in the future
+Game.prototype.createBricks = function()
+{
 	var x = 12.5;
 	var y = 10;
 	var colors = Brick.colors();
@@ -50,21 +77,6 @@ var Game = function(canvas)
 		x = 12.5;
 		y += 30;
 	}
-
-	// Adjust canvas to fit all the window
-	var game = this;
-	window.onresize = function() { game.adjustCanvas(); };
-	this.adjustCanvas();
-
-	// Cache the context
-	this.cachedContext = this.canvas.getContext("2d");
-};
-
-Game.prototype.adjustCanvas = function()
-{
-	var scale = ScreenScaler.scale(this);
-	this.canvas.style.width = scale.width + "px";
-	this.canvas.style.height = scale.height + "px";
 };
 
 // Starts the game loop
@@ -79,6 +91,7 @@ Game.prototype.startLoop = function()
 	this.canvas.parentNode.addEventListener("keydown", this, true);
 	this.canvas.parentNode.addEventListener("keyup", this, true);
 	this.canvas.parentNode.addEventListener("mousemove", this, true);
+	this.canvas.parentNode.addEventListener("touchmove", this, true);
 };
 
 // The game loop! good ol' times :D
@@ -169,7 +182,13 @@ Game.prototype.handleEvent = function(event)
 		}
 		case "mousemove":
 		{
-			this.mouse.mouseMove(event);
+			this.mouse.move(event);
+			break;
+		}
+		case "touchmove":
+		{
+			this.touch.move(event);
+			break;
 		}
 	}
 };
