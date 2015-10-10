@@ -8,6 +8,7 @@ A minimalistic Javascript / HTML5 / CSS3 arkanoid clone.
 * Mouse support
 * Touch screen support (try it from your phone or tablet)
 * Game scales to any possible screen resolution.
+* Sound effects
 
 # Why?
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
@@ -25,6 +26,7 @@ Use your keyboard or mouse to move the pad.
 
 # Upcoming features
 
-* Add sounds
 * Add leveling
 * Add a simple level designer
+* Add optional FPS display
+* Add an intro menu and settings

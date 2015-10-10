@@ -22,6 +22,12 @@ var Game = function(canvas)
 	this.score = 0;
 	this.lives = 2;
 
+	this.audioLibrary = new AudioLibrary();
+	this.audioLibrary.add("ball_hit_1", "BALL_HIT_1");
+	this.audioLibrary.add("ball_hit_2", "BALL_HIT_2");
+	this.audioLibrary.add("life_lost", "LIFE_LOST");
+	this.audioLibrary.add("pad_hit_1", "PAD_HIT_1");
+
 	// My two featured characters :)
 	this.pad = new Pad(this);
 	this.ball = new Ball(this);
@@ -111,6 +117,7 @@ Game.prototype.loop = function()
 	if (ball.isAtScreenBottom(this))
 	{
 		this.lives--;
+		this.audioLibrary.get("LIFE_LOST").play();
 		ball.reset();
 	}
 
@@ -144,7 +151,16 @@ Game.prototype.loop = function()
 			{
 				this.actors.splice(index, 1);
 				this.score += 100;
+
+				// Play the brick collision sound
+				this.audioLibrary.getRandom(["BALL_HIT_1", "BALL_HIT_2"]).play();
 			}
+		}
+
+		if (actor instanceof Pad)
+		{
+			// Play the pad collision sound
+			this.audioLibrary.get("PAD_HIT_1").play();
 		}
 	}
 
