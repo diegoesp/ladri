@@ -10,9 +10,12 @@
 // lives: chances for the player
 // timer: holds the setInterval timer for the game loop
 // screen: Useful class for responsive screen purposes
-var Game = function(canvas)
+// audioLibrary: holds the sound effects that we play
+// framesPerSecond: holds the FPS utility
+var LadriGame = function(canvas)
 {
-	this.canvas = canvas;
+	// Call parent constructor
+	Game.call(this, canvas);
 	
 	// Input methods (player can use keyboard, mouse or touchscreen)
 	this.keyboard = new Keyboard();
@@ -40,27 +43,17 @@ var Game = function(canvas)
 	// Hide the mouse cursor inside the canvas.
 	this.canvas.style.cursor = "none";
 
-	// Adjust canvas to fit present window...
-	this.resizeCanvas();
-	// ... and ask the window to resize it whenever the window changes
-	var game = this;
-	window.onresize = function() { game.resizeCanvas(); };
-
-	// Cache the context
-	this.cachedContext = this.canvas.getContext("2d");
+	this.framesPerSecond = new FramesPerSecond();
 };
 
-Game.prototype.resizeCanvas = function()
-{
-	var scale = ScreenScaler.scale(this);
-	this.canvas.style.width = scale.width + "px";
-	this.canvas.style.height = scale.height + "px";
-};
+// Inherit from Game
+LadriGame.prototype = Object.create(Game.prototype);
+LadriGame.prototype.constructor = LadriGame;
 
 // Create bricks for the player to bust. We start at the upper left corner
 // and then iterate through each line until we have all the bricks.
 // We will probably replace this for a level creator in the future
-Game.prototype.createBricks = function()
+LadriGame.prototype.createBricks = function()
 {
 	var x = 12.5;
 	var y = 10;
@@ -85,25 +78,8 @@ Game.prototype.createBricks = function()
 	}
 };
 
-// Starts the game loop
-Game.prototype.startLoop = function()
-{
-	var game = this;
-
-	// Using a timer
-	this.timer = window.setInterval(function() { game.loop(); }, 15);
-
-	// Using requestAnimationFrame
-	// window.requestAnimationFrame(function() { game.loop(); });
-
-	this.canvas.parentNode.addEventListener("keydown", this, true);
-	this.canvas.parentNode.addEventListener("keyup", this, true);
-	this.canvas.parentNode.addEventListener("mousemove", this, true);
-	this.canvas.parentNode.addEventListener("touchmove", this, true);
-};
-
 // The game loop! good ol' times :D
-Game.prototype.loop = function()
+LadriGame.prototype.loop = function()
 {
 	// First we do all the cool math and processing to prepare us to draw
 	// stuff on the screen
@@ -167,66 +143,13 @@ Game.prototype.loop = function()
 	// We finished calculations. Now we have to draw.
 	this.draw();
 
-
+	// Uncoment to use requestAnimationFrame
 	// var game = this;
 	// window.requestAnimationFrame(function() { game.loop(); });
 };
 
-Game.prototype.stopLoop = function()
-{
-	// Using a custom timer
-	window.clearInterval(this.timer);
-
-	// Using requestAnimationFrame
-	// window.cancelAnimationFrame();
-};
-
-Game.prototype.width = function()
-{
-	return this.canvas.width;
-};
-
-Game.prototype.height = function()
-{
-	return this.canvas.height;
-};
-
-Game.prototype.handleEvent = function(event)
-{
-	// Fills the keyboard status object
-	switch(event.type)
-	{
-		case "keydown":
-		{
-			this.keyboard.keyDown(event);
-			break;
-		}
-		case "keyup":
-		{
-			this.keyboard.keyUp(event);
-			break;
-		}
-		case "mousemove":
-		{
-			this.mouse.move(event);
-			break;
-		}
-		case "touchmove":
-		{
-			this.touch.move(event);
-			break;
-		}
-	}
-};
-
-// Gets a context for drawing
-Game.prototype.context = function()
-{
-	return this.cachedContext;
-}
-
 // Draws a game frame
-Game.prototype.draw = function()
+LadriGame.prototype.draw = function()
 {
 	var context = this.context();
 
@@ -246,9 +169,11 @@ Game.prototype.draw = function()
 	for(var j = 0; j < actors.length; j++) actors[j].draw(context);
 
 	this.drawHud();
+
+	this.framesPerSecond.drawn();
 };
 
-Game.prototype.drawHud = function()
+LadriGame.prototype.drawHud = function()
 {
 	var context = this.context();
 
@@ -260,9 +185,12 @@ Game.prototype.drawHud = function()
 
 	// Draw lives
 	context.fillText("Lives: " + this.lives, 150, 590);
+
+	// Draw FPS
+	context.fillText("FPS: " + this.framesPerSecond.calculate(), 300, 590);
 };
 
-Game.prototype.drawOver = function()
+LadriGame.prototype.drawOver = function()
 {
 	var context = this.context();
 

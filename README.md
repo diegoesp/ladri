@@ -1,9 +1,9 @@
 # Ladri
-A minimalistic Javascript / HTML5 / CSS3 arkanoid clone.
+A minimalistic Javascript / HTML5 arkanoid clone that runs on your browser
 
 # Nice features
 
-* 100% pure HTML/JS. Runs on your browser, supplied by your filesystem. You don't even need a web server.
+* 100% pure HTML/JS. Runs on your browser, supplied by your filesystem.
 * Keyboard support
 * Mouse support
 * Touch screen support (try it from your phone or tablet)
@@ -18,15 +18,14 @@ It is also a reference implementation for a simple game HTML5 game framework cal
 
 # How to play
 Just pull the repository into a directory and open index.html using a browser. Simple! don't you just love HTML?
-Use your keyboard or mouse to move the pad.
+Use your keyboard, mouse or touch screen to move the pad.
 
 # Other considerations
 
-* Supports both timer and requestAnimationFrame (using a polyfill). I'm still choosing the timer approach as my favorite as it is more flexible, cleaner from a code perspective, stable, and works with most browsers.
+* Supports both timer and requestAnimationFrame (using a polyfill).
 
 # Upcoming features
 
-* Add leveling
-* Add a simple level designer
-* Add optional FPS display
 * Add an intro menu and settings
+* Add a nice background to the game
+* Add leveling and a simple level designer

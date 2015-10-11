@@ -7,11 +7,21 @@ var AudioLibrary = function()
 // Adds an audio file to the collection. Must specify the file name (without extension)
 // and a friendly name for the file to be searched.
 //
+// Can provide an onload function (optional) that notifies when the audio file
+// was loaded. Useful for large files like music intro and such.
+//
 // The class determines the correct file extension based on browser support.
-AudioLibrary.prototype.add = function(file, friendlyName)
+AudioLibrary.prototype.add = function(file, friendlyName, onload)
 {
-
 	var audio = new Audio();
+
+	if (onload)
+	{
+		audio.addEventListener("canplaythrough", function() {
+			onload();
+		});
+	}
+
 	audio.src = "assets/" + file + "." + this.preferredExtension();
 	this.audioMap[friendlyName] = audio;
 };

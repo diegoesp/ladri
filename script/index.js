@@ -2,6 +2,6 @@ function onload()
 {
 	var canvas = document.getElementById("ladriCanvas");	
 
-	var game = new Game(canvas);
-	game.startLoop();
+	var ladriGame = new LadriGame(canvas);
+	ladriGame.startLoop();
 }
