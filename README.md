@@ -2,6 +2,8 @@
 A minimalistic Javascript / HTML5 arkanoid clone that runs on your browser. It does not
 use bitmaps, just vector drawing and colors.
 
+![Screenshot](/doc/screenshot.jpg?raw=true "Isn't it cute?")
+
 # Nice features
 
 * 100% pure HTML/JS. Runs on your browser, supplied by your filesystem.
