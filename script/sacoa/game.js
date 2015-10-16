@@ -2,9 +2,22 @@
 //
 // Supply a canvas for the constructor
 // Implement loop() that is called to execute the game loop.
+//
+// Instance variables:
+//
+// canvas: holds the canvas for drawing
+// keyboard: a Keyboard controller, so we know what is pressed inside the game loop
+// mouse: a Mouse controller, so we know it is moved inside the game loop
+// touch: a Touch controller, so we know it is used inside the game loop
+// timer: holds the setInterval timer for the game loop
 var Game = function(canvas)
 {
 	this.canvas = canvas;
+
+	// Input methods (player can use keyboard, mouse or touchscreen)
+	this.keyboard = new Keyboard();
+	this.mouse = new Mouse();
+	this.touch = new Touch();
 
 	// Adjust canvas to fit present window...
 	this.resizeCanvas();
@@ -58,12 +71,17 @@ Game.prototype.handleEvent = function(event)
 		}
 		case "mousemove":
 		{
-			this.mouse.move(event);
+			this.mouse.interact(event);
+			break;
+		}
+		case "click":
+		{
+			this.mouse.interact(event);
 			break;
 		}
 		case "touchmove":
 		{
-			this.touch.move(event);
+			this.touch.interact(event);
 			break;
 		}
 	}
@@ -82,9 +100,12 @@ Game.prototype.startLoop = function()
 	this.canvas.parentNode.addEventListener("keydown", this, true);
 	this.canvas.parentNode.addEventListener("keyup", this, true);
 	this.canvas.parentNode.addEventListener("mousemove", this, true);
+	this.canvas.parentNode.addEventListener("click", this, true);
 	this.canvas.parentNode.addEventListener("touchmove", this, true);
 };
 
+// Stops the game loop. That means no more key/mouse/touch events, no more
+// physics and no more drawing. The game stops.
 Game.prototype.stopLoop = function()
 {
 	// Uncomment to use a timer to draw
@@ -93,6 +114,7 @@ Game.prototype.stopLoop = function()
 	this.canvas.parentNode.removeEventListener("keydown", this);
 	this.canvas.parentNode.removeEventListener("keyup", this);
 	this.canvas.parentNode.removeEventListener("mousemove", this);
+	this.canvas.parentNode.removeEventListener("click", this);
 	this.canvas.parentNode.removeEventListener("touchmove", this);
 
 	// Uncomment to use requestAnimationFrame
@@ -100,4 +122,4 @@ Game.prototype.stopLoop = function()
 };
 
 // Please implement
-LadriGame.prototype.loop = function() {};
+Game.prototype.loop = function() {};

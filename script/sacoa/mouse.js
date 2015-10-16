@@ -5,7 +5,8 @@ var Mouse = function()
 		x: 0,
 		y: 0,
 		left: false,
-		right: false
+		right: false,
+		leftClick: false
 	};
 };
 
@@ -14,7 +15,7 @@ Mouse.prototype.getCoordinates = function(event)
 	return { clientX: event.clientX, clientY: event.clientY };
 };
 
-Mouse.prototype.move = function(event)
+Mouse.prototype.interact = function(event)
 {
 	var coordinates = this.getCoordinates(event);
 	var diff = coordinates.clientX - this.movementMap.x;
@@ -24,6 +25,8 @@ Mouse.prototype.move = function(event)
 
 	this.movementMap.x = coordinates.clientX;
 	this.movementMap.y = coordinates.clientY;
+console.log(event.buttons);
+	if (event.buttons === 1) this.movementMap.leftClick = true;
 };
 
 // Gets the mouse map movement. Do not call more than once per cycle,
@@ -41,6 +44,7 @@ Mouse.prototype.map = function()
 
 	map.left = false;
 	map.right = false;
+	map.leftClick = false;
 
 	return clonedMap;
 };

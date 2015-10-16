@@ -8,12 +8,14 @@ var Keyboard = function()
 		cursorLeft: 37,
 		cursorUp: 38,
 		cursorRight: 39,
-		cursorDown: 40
+		cursorDown: 40,
+		enter: 13
 	};
 
 	this.map = {
 		cursorLeft: false,
-		cursorRight: false
+		cursorRight: false,
+		enter: false
 	};
 };
 
@@ -21,12 +23,14 @@ Keyboard.prototype.keyUp = function(event)
 {
 	if (event.keyCode === this.codes.cursorLeft) this.map.cursorLeft = false;
 	if (event.keyCode === this.codes.cursorRight) this.map.cursorRight = false;
+	if (event.keyCode === this.codes.enter) this.map.enter = false;
 };
 
 Keyboard.prototype.keyDown = function()
 {
 	if (event.keyCode === this.codes.cursorLeft) this.map.cursorLeft = true;
 	if (event.keyCode === this.codes.cursorRight) this.map.cursorRight = true;
+	if (event.keyCode === this.codes.enter) this.map.enter = true;
 };
 
 Keyboard.prototype.keyMap = function()

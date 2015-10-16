@@ -1,5 +1,6 @@
 # Ladri
-A minimalistic Javascript / HTML5 arkanoid clone that runs on your browser
+A minimalistic Javascript / HTML5 arkanoid clone that runs on your browser. It does not
+use bitmaps, just vector drawing and colors.
 
 # Nice features
 
@@ -14,7 +15,7 @@ A minimalistic Javascript / HTML5 arkanoid clone that runs on your browser
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
 HTML5 "primitives" to create simple games.
 
-It is also a reference implementation for a simple game HTML5 game framework called "Sacoa"
+It is also a reference implementation for a simple HTML5 game framework called "Sacoa"
 
 # How to play
 Just pull the repository into a directory and open index.html using a browser. Simple! don't you just love HTML?
@@ -24,8 +25,13 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 * Supports both timer and requestAnimationFrame (using a polyfill).
 
+# Credits
+
+* I'm using an awesome song for the intro created by Schematist (https://www.facebook.com/schematist). Allowed to use for non-commercial projects.
+
 # Upcoming features
 
-* Add an intro menu and settings
-* Add a nice background to the game
-* Add leveling and a simple level designer
+* Complete the leveling and the simple level designer
+* Take into account ball speed increase from level designer
+* Add the capacity to jump to a next level
+* Go back to menu after losing (do not make the user refresh)

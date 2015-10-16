@@ -18,7 +18,8 @@ Pad.prototype.draw = function()
 {
 	var context = this.game.context();
 
-	context.fillStyle = "black";
+	// Blue
+	context.fillStyle = "rgb(84, 182, 255)";
 
 	var screen = this.game.screen;
 

@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'makhina';
+  src: url('../assets/makhina.ttf');
+}
+
+@font-face {
+  font-family: 'rodusround';
+  src: url('../assets/rodusround300.woff');
+}
+
 #ladriCanvas {
 	border: black 1px solid;
 }

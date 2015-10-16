@@ -35,3 +35,9 @@
 		clearTimeout(id);
 	};
 }());
+
+// Returns a random round number between two round numbers. Probability is not uniform.
+Math.randomBetween = function(min, max)
+{
+	return Math.round((Math.random() * (max - min)) + min);
+};

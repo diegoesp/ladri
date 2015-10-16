@@ -36,8 +36,8 @@ AudioLibrary.prototype.get = function(friendlyName)
 // a little fuziness to sounds
 AudioLibrary.prototype.getRandom = function(friendlyNameArray)
 {
-	var length = (friendlyNameArray.length - 1);
-	var i = Math.round((Math.random() * length));
+	var max = (friendlyNameArray.length - 1);
+	var i = Math.randomBetween(0, max);
 	var key = friendlyNameArray[i];
 
 	return this.audioMap[key];

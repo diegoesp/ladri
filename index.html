@@ -4,6 +4,7 @@
 		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
 		<title>Ladri - a HTML arkanoid clone</title>
 		
+		<link rel="stylesheet" type="text/css" href="css/ladri.css">
 		<script src="script/sacoa/keyboard.js"></script>
 		<script src="script/sacoa/mouse.js"></script>
 		<script src="script/sacoa/touch.js"></script>
@@ -13,15 +14,19 @@
 		<script src="script/sacoa/actor.js"></script>
 		<script src="script/sacoa/frames_per_second.js"></script>
 		<script src="script/sacoa/game.js"></script>
+		<script src="script/levels/level.js"></script>
+		<script src="script/levels/level01.js"></script>
+		<script src="script/levels/levelSelector.js"></script>
+		<script src="script/stars.js"></script>
 		<script src="script/ball.js"></script>
 		<script src="script/pad.js"></script>
 		<script src="script/brick.js"></script>
 		<script src="script/ladri_game.js"></script>
+		<script src="script/menu_game.js"></script>
 		<script src="script/index.js"></script>
 
 		<!-- Disable multi-touch: we want to use touch for our game :) -->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<link rel="stylesheet" type="text/css" href="css/ladri.css"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">	
 	</head>
 	<body onload="onload()">
 		<canvas id="ladriCanvas" width="800" height="600">
