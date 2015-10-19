@@ -20,6 +20,7 @@ var LadriGame = function(canvas)
 	this.audioLibrary.add("ball_hit_2", "BALL_HIT_2");
 	this.audioLibrary.add("life_lost", "LIFE_LOST");
 	this.audioLibrary.add("pad_hit_1", "PAD_HIT_1");
+	this.audioLibrary.add("level_won", "LEVEL_WON");
 
 	this.stars = new Stars(this);
 	this.stars.setSpeed({ x: 0, y: 0.4 });
@@ -33,25 +34,76 @@ var LadriGame = function(canvas)
 	this.actors.push(this.ball);
 
 	// Hide the mouse cursor inside the canvas.
-	this.canvas.style.cursor = "none";
+	// this.canvas.style.cursor = "none";
 
 	this.framesPerSecond = new FramesPerSecond();
 
 	// Get the first level...
 	this.levelSelector = new LevelSelector();
 	var level = this.levelSelector.nextLevel();
-	/// ...and add the bricks
-	var bricks = level.createBricks(this);
-	this.actors = this.actors.concat(bricks);
+	this.startLevel(level);
 };
 
 // Inherit from Game
 LadriGame.prototype = Object.create(Game.prototype);
 LadriGame.prototype.constructor = LadriGame;
 
+LadriGame.prototype.startLevel = function(level)
+{
+	// Add the bricks
+	var bricks = level.createBricks(this);
+	this.actors = this.actors.concat(bricks);
+	// Set the initial ball speed
+	this.ball.setSpeed(level.ballSpeed);
+	// Set a timeout for ball speed increment
+	var ball = this.ball;
+	this.incrementSpeedInterval = window.setInterval(function() 
+	{
+		ball.incrementSpeed(level.incrementBallSpeed);
+	}, level.secondsToIncrementBallSpeed * 1000);
+
+	this.level = level;
+};
+
+// If true, then the level was completed
+LadriGame.prototype.isLevelComplete = function()
+{
+	if (this.actors.length <= 2) return true;
+	return false;
+};
+
 // The game loop! good ol' times :D
 LadriGame.prototype.loop = function()
 {
+	// If level is  complete, then draw a small animation, play
+	// a sound and instance the new level.
+	if (this.isLevelComplete())
+	{
+		if (this.incrementSpeedInterval)
+		{
+			window.clearInterval(this.incrementSpeedInterval);
+			this.incrementSpeedInterval = null;
+
+			this.audioLibrary.get("LEVEL_WON").play();
+		}
+
+		this.pad.y -= 10;
+
+		if (this.pad.y < 15)
+		{
+			var level = this.levelSelector.nextLevel();
+			this.startLevel(level);
+			this.pad.reset();
+			this.ball.reset();
+		}
+		else
+		{
+			this.draw();
+		}
+
+		return;
+	}
+
 	// First we do all the cool math and processing to prepare us to draw
 	// stuff on the screen
 
@@ -152,14 +204,17 @@ LadriGame.prototype.drawHud = function()
 	context.fillStyle = "rgb(0, 255, 144)";
 	context.font = "12pt rodusround";
 
+	// Draw Level
+	context.fillText("Level: " + this.level.getName(), 10, 590);
+
 	// Draw the score
-	context.fillText("Score: " + this.score, 10, 590);
+	context.fillText("Score: " + this.score, 140, 590);
 
 	// Draw lives
-	context.fillText("Lives: " + this.lives, 150, 590);
+	context.fillText("Lives: " + this.lives, 280, 590);
 
 	// Draw FPS
-	context.fillText("FPS: " + this.framesPerSecond.calculate(), 280, 590);
+	context.fillText("FPS: " + this.framesPerSecond.calculate(), 735, 590);
 };
 
 LadriGame.prototype.drawOver = function()
@@ -169,7 +224,7 @@ LadriGame.prototype.drawOver = function()
 	// Green
 	context.fillStyle = "rgb(0, 255, 144)";
 	context.font = "20pt rodusround";
-	context.fillText("Game Over :(", 320, 280);
+	context.fillText("Game Over :(", 320, 320);
 
 	context.font = "14pt rodusround";
 	context.fillText("Refresh to play again!", 300, 500);

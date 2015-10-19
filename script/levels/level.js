@@ -4,9 +4,9 @@ var Level = function()
 	// Initial ball speed
 	this.ballSpeed = 3.5;
 	// Seconds to increment ball speed
-	this.secondsToIncrementBallSpeed = 30;
+	this.secondsToIncrementBallSpeed = 15;
 	// How much to increment ball speed
-	this.incrementBallSpeed = 2;
+	this.incrementBallSpeed = 1;
 	
 	// Map for bricks. See setBricks for documentation
 	this.bricksMap = "";
@@ -81,4 +81,9 @@ Level.prototype.createBricks = function(game)
 	}
 
 	return bricks;
+};
+
+Level.prototype.getName = function()
+{
+	return "N/A";
 };

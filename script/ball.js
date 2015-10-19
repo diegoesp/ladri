@@ -44,12 +44,12 @@ Ball.prototype.move = function()
 	this.y += this.speedY;
 };
 
-// Increments the speed on the ball adding the parameter to current speed
-Ball.prototype.incrementSeed = function(speed)
+// Increments the speed on the ball adding the parameter to current speed.
+Ball.prototype.incrementSpeed = function(speed)
 {
 	// Keep the direction (determined by the sign of the number)
-	var signX = (this.speedX / this.speedX);
-	var signY = (this.speedY / this.speedY);
+	var signX = Math.sign(this.speedX);
+	var signY = Math.sign(this.speedY);
 
 	// Add speed in absolute value
 	this.speedX = Math.abs(this.speedX) + Math.abs(speed);
@@ -58,4 +58,12 @@ Ball.prototype.incrementSeed = function(speed)
 	// Get back the direction
 	this.speedX *= signX;
 	this.speedY *= signY;
+};
+
+// Sets  the speed on the ball adding the parameter to current speed
+Ball.prototype.setSpeed = function(speed)
+{
+	// Add speed in absolute value
+	this.speedX = speed;
+	this.speedY = speed;
 }

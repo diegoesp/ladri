@@ -12,6 +12,7 @@ use bitmaps, just vector drawing and colors.
 * Touch screen support (try it from your phone or tablet)
 * Game scales to any possible screen resolution.
 * Sound effects
+* Levels and a nice level designer to add more levels dynamically
 
 # Why?
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
@@ -33,7 +34,6 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Complete the leveling and the simple level designer
-* Take into account ball speed increase from level designer
-* Add the capacity to jump to a next level
 * Go back to menu after losing (do not make the user refresh)
+* Add more levels
+* Add a finishing level for the user to win the game

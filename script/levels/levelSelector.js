@@ -13,6 +13,7 @@ LevelSelector.prototype.reset = function()
 {
 	this.levels = [];
 	this.levels.push(new Level01());
+	this.levels.push(new Level02());
 
 	this.levels.reverse();
 };

@@ -25,7 +25,7 @@ Mouse.prototype.interact = function(event)
 
 	this.movementMap.x = coordinates.clientX;
 	this.movementMap.y = coordinates.clientY;
-console.log(event.buttons);
+
 	if (event.buttons === 1) this.movementMap.leftClick = true;
 };
 
