@@ -12,7 +12,7 @@ use bitmaps, just vector drawing and colors.
 * Touch screen support (try it from your phone or tablet)
 * Game scales to any possible screen resolution.
 * Sound effects
-* Levels and a nice level designer to add more levels dynamically
+* Levels and a simple level mapper to easily add new levels
 
 # Why?
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
