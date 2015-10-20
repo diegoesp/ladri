@@ -38,8 +38,15 @@ var LadriGame = function(canvas)
 
 	this.framesPerSecond = new FramesPerSecond();
 
-	// Get the first level...
 	this.levelSelector = new LevelSelector();
+
+	/*
+	var debugGame = new DebugGame(this);
+	debugGame.onlyOneLevel();
+	debugGame.makeFirstLevelSimple();	
+	*/
+
+	// Get the first level...
 	var level = this.levelSelector.nextLevel();
 	this.startLevel(level);
 };
@@ -87,9 +94,13 @@ LadriGame.prototype.loop = function()
 				ball.reset();
 			}
 
-			// Check if the ball is touching screen edges
-			if (ball.isAtScreenEdgeX(this)) ball.speedX = -ball.speedX;
-			if (ball.isAtScreenEdgeY(this)) ball.speedY = -ball.speedY;
+			// Check if the ball is touching screen edges. If that is the case, we have
+			// to revert speed so it "collides" to the border
+			if (ball.x < 0) ball.speedX = Math.abs(ball.speedX);
+			if (ball.x > this.width()) ball.speedX = -Math.abs(ball.speedX);
+			if (ball.y < 0) ball.speedY = Math.abs(ball.speedY);
+			if (ball.y > this.height()) ball.speedY = -Math.abs(ball.speedY);
+
 			ball.move();
 
 			// Check for collisions
@@ -132,7 +143,7 @@ LadriGame.prototype.loop = function()
 
 			break;
 		}
-		case this.STATUS.WON:
+		case this.STATUS.LEVEL_WON:
 		{
 			// If level is  complete, then draw a small animation, play
 			// a sound and instance the new level.
@@ -157,28 +168,38 @@ LadriGame.prototype.loop = function()
 
 			break;
 		}
+		case this.STATUS.WON:
+		{
+			this.end();
+			break;
+		}
 		case this.STATUS.LOST:
 		{
-			// Set a timer that redirects me to the menu after a time of showing
-			// game over
-			if (!this.gameOverInterval)
-			{
-				var game = this;
-				this.gameOverInterval = window.setInterval(function() {
-					window.clearInterval(game.gameOverInterval);
-					game.stopLoop();
-
-					var menuGame = new MenuGame(game.canvas);
-					menuGame.startLoop();
-				}, 5000);
-			}
-
+			this.end();
 			break;
 		}
 	}
 
 	// We finished calculations. Now we have to draw the frame
 	this.draw();
+};
+
+// Ends the game, returning the user to the main menu
+LadriGame.prototype.end = function()
+{
+	// Set a timer that redirects me to the menu after a time of showing an end message
+	// or animation
+	if (!this.endInterval)
+	{
+		var game = this;
+		this.endInterval = window.setInterval(function() {
+			window.clearInterval(game.endInterval);
+			game.stopLoop();
+
+			var menuGame = new MenuGame(game.canvas);
+			menuGame.startLoop();
+		}, 5000);
+	}
 };
 
 // Draws a game frame
@@ -204,6 +225,7 @@ LadriGame.prototype.draw = function()
 		actor.draw(context);
 	}
 
+	if (this.getStatus() === this.STATUS.WON) this.drawWon();
 	if (this.getStatus() === this.STATUS.LOST) this.drawOver();
 
 	this.drawHud();
@@ -232,6 +254,18 @@ LadriGame.prototype.drawHud = function()
 	context.fillText("FPS: " + this.framesPerSecond.calculate(), 735, 590);
 };
 
+LadriGame.prototype.drawWon = function()
+{
+	var context = this.context();
+
+	context.fillStyle = "rgb(255, 124, 163)";
+	context.font = "25pt rodusround";
+	context.fillText("Congratulations! You won! :D", 200, 100);
+
+	context.font = "14pt rodusround";
+	context.fillText("Final score: " + this.score, 330, 225);
+};
+
 LadriGame.prototype.drawOver = function()
 {
 	var context = this.context();
@@ -245,12 +279,14 @@ LadriGame.prototype.drawOver = function()
 	context.fillText("Final score: " + this.score, 330, 425);
 };
 
-LadriGame.prototype.STATUS = { PLAYING: 1, WON: 2, LOST: 3 };
+LadriGame.prototype.STATUS = { PLAYING: 1, LEVEL_WON: 2, WON: 3, LOST: 4 };
 
 // Gets the status of the game. Possible statuses are determined by STATUS hash
 LadriGame.prototype.getStatus = function()
 {
-	if (this.actors.length <= 2) return this.STATUS.WON;
+	if (this.actors.length <= 2 && !this.levelSelector.hasNextLevel()) return this.STATUS.WON;
+	if (this.actors.length <= 2) return this.STATUS.LEVEL_WON;
 	if (this.lives < 0) return this.STATUS.LOST;
+
 	return this.STATUS.PLAYING;
 };

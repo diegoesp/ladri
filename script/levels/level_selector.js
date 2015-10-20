@@ -17,3 +17,10 @@ LevelSelector.prototype.reset = function()
 
 	this.levels.reverse();
 };
+
+// Returns true if there are more levels pending to be shown. If false,
+// the user must be playing the final level
+LevelSelector.prototype.hasNextLevel = function()
+{
+	return (this.levels.length > 0);
+};

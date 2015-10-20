@@ -3,20 +3,6 @@ var Level01 = function()
 	Level.call(this);
 
 	// Will use default brick map for this level
-
-	// This is a bricks map used to test level jumping. Should be commented.
-	/*
-	this.bricksMap = "";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "---------";
-	this.bricksMap += "-------X-";
-	*/
 };
 
 // Inherit from Level
