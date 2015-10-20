@@ -34,6 +34,7 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Go back to menu after losing (do not make the user refresh)
 * Add more levels
 * Add a finishing level for the user to win the game
+* Add options to the initial menu => initially I'd add "New game" and "Continue"
+* Add full screen mode

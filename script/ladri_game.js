@@ -65,105 +65,119 @@ LadriGame.prototype.startLevel = function(level)
 	this.level = level;
 };
 
-// If true, then the level was completed
-LadriGame.prototype.isLevelComplete = function()
-{
-	if (this.actors.length <= 2) return true;
-	return false;
-};
-
 // The game loop! good ol' times :D
 LadriGame.prototype.loop = function()
 {
-	// If level is  complete, then draw a small animation, play
-	// a sound and instance the new level.
-	if (this.isLevelComplete())
+	// First we do all the cool math stuff and processing to prepare us to draw
+	// a frame on the screen
+	switch(this.getStatus())
 	{
-		if (this.incrementSpeedInterval)
+		case this.STATUS.PLAYING:
 		{
-			window.clearInterval(this.incrementSpeedInterval);
-			this.incrementSpeedInterval = null;
+			// Move the pad
+			this.pad.move(this);
 
-			this.audioLibrary.get("LEVEL_WON").play();
-		}
+			var ball = this.ball;
 
-		this.pad.y -= 10;
-
-		if (this.pad.y < 15)
-		{
-			var level = this.levelSelector.nextLevel();
-			this.startLevel(level);
-			this.pad.reset();
-			this.ball.reset();
-		}
-		else
-		{
-			this.draw();
-		}
-
-		return;
-	}
-
-	// First we do all the cool math and processing to prepare us to draw
-	// stuff on the screen
-
-	// Move the pad
-	this.pad.move(this);
-
-	var ball = this.ball;
-
-	// Check if the user lost a life?
-	if (ball.isAtScreenBottom(this))
-	{
-		this.lives--;
-		this.audioLibrary.get("LIFE_LOST").play();
-		ball.reset();
-	}
-
-	// Check if the ball is touching screen edges
-	if (ball.isAtScreenEdgeX(this)) ball.speedX = -ball.speedX;
-	if (ball.isAtScreenEdgeY(this)) ball.speedY = -ball.speedY;
-	ball.move();
-
-	// Check for collisions
-	var collisions = ball.collisions(this);
-	if (collisions.length > 0)
-	{
-		var collision = collisions[0];
-		if (collision.x) ball.speedX = -ball.speedX;
-		if (collision.y) ball.speedY = -ball.speedY;
-	}
-
-	// Review if a collision to a brick happened. If that is the case
-	// we have to take a brick out and add a score
-	for(var i = 0; i < collisions.length; i++)
-	{
-		var actor = collisions[i].actor;
-		if (actor instanceof Brick)
-		{
-			var index = this.actors.indexOf(actor);
-			if (index < 0)
+			// Check if the user lost a life?
+			if (ball.isAtScreenBottom(this))
 			{
-				console.log("Error!: busted brick could not be found as an actor");
+				this.lives--;
+				this.audioLibrary.get("LIFE_LOST").play();
+				ball.reset();
 			}
-			else
+
+			// Check if the ball is touching screen edges
+			if (ball.isAtScreenEdgeX(this)) ball.speedX = -ball.speedX;
+			if (ball.isAtScreenEdgeY(this)) ball.speedY = -ball.speedY;
+			ball.move();
+
+			// Check for collisions
+			var collisions = ball.collisions(this);
+			if (collisions.length > 0)
 			{
-				this.actors.splice(index, 1);
-				this.score += 100;
-
-				// Play the brick collision sound
-				this.audioLibrary.getRandom(["BALL_HIT_1", "BALL_HIT_2"]).play();
+				var collision = collisions[0];
+				if (collision.x) ball.speedX = -ball.speedX;
+				if (collision.y) ball.speedY = -ball.speedY;
 			}
-		}
 
-		if (actor instanceof Pad)
+			// Review if a collision to a brick happened. If that is the case
+			// we have to take a brick out and add a score
+			for(var i = 0; i < collisions.length; i++)
+			{
+				var actor = collisions[i].actor;
+				if (actor instanceof Brick)
+				{
+					var index = this.actors.indexOf(actor);
+					if (index < 0)
+					{
+						console.log("Error!: busted brick could not be found as an actor");
+					}
+					else
+					{
+						this.actors.splice(index, 1);
+						this.score += 100;
+
+						// Play the brick collision sound
+						this.audioLibrary.getRandom(["BALL_HIT_1", "BALL_HIT_2"]).play();
+					}
+				}
+
+				if (actor instanceof Pad)
+				{
+					// Play the pad collision sound
+					this.audioLibrary.get("PAD_HIT_1").play();
+				}
+			}
+
+			break;
+		}
+		case this.STATUS.WON:
 		{
-			// Play the pad collision sound
-			this.audioLibrary.get("PAD_HIT_1").play();
+			// If level is  complete, then draw a small animation, play
+			// a sound and instance the new level.
+
+			if (this.incrementSpeedInterval)
+			{
+				window.clearInterval(this.incrementSpeedInterval);
+				this.incrementSpeedInterval = null;
+
+				this.audioLibrary.get("LEVEL_WON").play();
+			}
+
+			this.pad.y -= 10;
+
+			if (this.pad.y < 15)
+			{
+				var level = this.levelSelector.nextLevel();
+				this.startLevel(level);
+				this.pad.reset();
+				this.ball.reset();
+			}
+
+			break;
+		}
+		case this.STATUS.LOST:
+		{
+			// Set a timer that redirects me to the menu after a time of showing
+			// game over
+			if (!this.gameOverInterval)
+			{
+				var game = this;
+				this.gameOverInterval = window.setInterval(function() {
+					window.clearInterval(game.gameOverInterval);
+					game.stopLoop();
+
+					var menuGame = new MenuGame(game.canvas);
+					menuGame.startLoop();
+				}, 5000);
+			}
+
+			break;
 		}
 	}
 
-	// We finished calculations. Now we have to draw.
+	// We finished calculations. Now we have to draw the frame
 	this.draw();
 };
 
@@ -171,15 +185,7 @@ LadriGame.prototype.loop = function()
 LadriGame.prototype.draw = function()
 {
 	var context = this.context();
-
-	// If game is over... then game is over! :D
-	if (this.lives < 0)
-	{
-		this.drawOver();
-		this.stopLoop();
-		return;
-	}
-
+	
 	context.fillStyle = "black";
 	context.fillRect(0, 0, this.width(), this.height());
 	// Empty the canvas
@@ -189,7 +195,16 @@ LadriGame.prototype.draw = function()
 	
 	// Draw the actors
 	var actors = this.actors;
-	for(var j = 0; j < actors.length; j++) actors[j].draw(context);
+	for(var j = 0; j < actors.length; j++)
+	{
+		var actor = actors[j];
+		// If I lost, do not draw the ball again
+		if (this.getStatus() === this.STATUS.LOST && actor instanceof Ball) continue;
+
+		actor.draw(context);
+	}
+
+	if (this.getStatus() === this.STATUS.LOST) this.drawOver();
 
 	this.drawHud();
 
@@ -227,5 +242,15 @@ LadriGame.prototype.drawOver = function()
 	context.fillText("Game Over :(", 320, 320);
 
 	context.font = "14pt rodusround";
-	context.fillText("Refresh to play again!", 300, 500);
+	context.fillText("Final score: " + this.score, 330, 425);
+};
+
+LadriGame.prototype.STATUS = { PLAYING: 1, WON: 2, LOST: 3 };
+
+// Gets the status of the game. Possible statuses are determined by STATUS hash
+LadriGame.prototype.getStatus = function()
+{
+	if (this.actors.length <= 2) return this.STATUS.WON;
+	if (this.lives < 0) return this.STATUS.LOST;
+	return this.STATUS.PLAYING;
 };
