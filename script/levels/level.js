@@ -82,8 +82,3 @@ Level.prototype.createBricks = function(game)
 
 	return bricks;
 };
-
-Level.prototype.getName = function()
-{
-	return "N/A";
-};

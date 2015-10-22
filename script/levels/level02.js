@@ -18,8 +18,3 @@ var Level02 = function()
 // Inherit from Level
 Level02.prototype = Object.create(Level.prototype);
 Level02.prototype.constructor = Level02;
-
-Level.prototype.getName = function()
-{
-	return "02";
-};

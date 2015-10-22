@@ -242,7 +242,7 @@ LadriGame.prototype.drawHud = function()
 	context.font = "12pt rodusround";
 
 	// Draw Level
-	context.fillText("Level: " + this.level.getName(), 10, 590);
+	context.fillText("Level: " + this.levelSelector.getLevelNumber(), 10, 590);
 
 	// Draw the score
 	context.fillText("Score: " + this.score, 140, 590);

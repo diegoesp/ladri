@@ -34,6 +34,8 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Add more levels
 * Add options to the initial menu => initially I'd add "New game" and "Continue"
+* Gime both choices requestAnimationFrame and timer by tweaking the class
 * Add full screen mode
+* Add more levels
+* Fix the mouse clicking bug on the initial menu
