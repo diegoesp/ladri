@@ -12,6 +12,11 @@ var MenuGame = function(canvas)
 	var audio = this.audioLibrary.get("intro");
 	audio.loop = true;
 	audio.play();
+
+	this.lastLevel = null;
+
+	this.menuOptionContinue = new MenuOption("Continue", 344, 320, this);
+	this.menuOptionNewGame = new MenuOption("New game", 335, 390, this);
 };
 
 MenuGame.prototype = Object.create(Game.prototype);
@@ -21,8 +26,16 @@ MenuGame.prototype.loop = function()
 {
 	if (this.keyboard.keyMap().enter || this.mouse.map().leftClick)
 	{
-		this.startGame();
-		return;
+		if (this.menuOptionNewGame.isSelected())
+		{
+			this.startGame();
+			return;
+		}
+		if (this.menuOptionContinue.isSelected())
+		{
+			this.startGame(true);
+			return;
+		}
 	}
 
 	var context = this.context();	
@@ -34,18 +47,31 @@ MenuGame.prototype.loop = function()
 
 	context.font = "60pt rodusround";
 	context.fillStyle = "rgb(255, 100, 100)";
-	context.fillText("LADRI", 280, 200);
+	context.fillText("LADRI", 280, 140);
 
-	context.font = "20pt rodusround";
-	context.fillStyle = "rgb(255, 255, 255)";
-	context.fillText("Press enter to start playing", 245, 370);
+	if (State.LAST_LEVEL)
+		this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
+	else
+		this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);
+
+	this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
+
+	if (State.LAST_LEVEL)
+		if (this.menuOptionContinue.isMousePointerOn(this))
+			this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+	
+	if (this.menuOptionNewGame.isMousePointerOn(this)) 
+		this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+
+	this.menuOptionContinue.draw();
+	this.menuOptionNewGame.draw();
 };
 
-MenuGame.prototype.startGame = function()
+MenuGame.prototype.startGame = function(continueGame)
 {
 	this.stopLoop();
 	this.audioLibrary.get("intro").pause();
 
 	var ladriGame = new LadriGame(this.canvas);
-	ladriGame.startLoop();
+	ladriGame.start(continueGame);
 };

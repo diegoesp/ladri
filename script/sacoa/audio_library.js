@@ -59,6 +59,6 @@ AudioLibrary.prototype.canPlay = function(format)
 	var audio = document.createElement("audio");
 	var canPlayType = audio.canPlayType(format);
 
-	if (canPlayType === "probably") return true;
+	if (canPlayType === "maybe") return true;
 	return false;
 };

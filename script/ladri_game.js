@@ -1,4 +1,7 @@
-// Our game. Holds the following class variables:
+// Our game
+//
+// Instance level variables
+// ========================
 //
 // pad: our hero!
 // ball: well... the ball
@@ -7,6 +10,12 @@
 // lives: chances for the player
 // audioLibrary: holds the sound effects that we play
 // framesPerSecond: holds the FPS utility
+//
+// Class static variables
+// ======================
+//
+// LAST_LEVEL: the last level the user had access to, so he can continue
+//
 var LadriGame = function(canvas)
 {
 	// Call parent constructor
@@ -40,22 +49,38 @@ var LadriGame = function(canvas)
 
 	this.levelSelector = new LevelSelector();
 
-	/*
 	var debugGame = new DebugGame(this);
-	debugGame.onlyOneLevel();
-	debugGame.makeFirstLevelSimple();	
-	*/
-
-	// Get the first level...
-	var level = this.levelSelector.nextLevel();
-	this.startLevel(level);
+	// debugGame.onlyOneLevel();
+	// debugGame.makeFirstLevelSimple();
+	// debugGame.makeAllLevelsSimple();
+	// debugGame.jumpToLevel(3);
 };
 
 // Inherit from Game
 LadriGame.prototype = Object.create(Game.prototype);
 LadriGame.prototype.constructor = LadriGame;
 
-LadriGame.prototype.startLevel = function(level)
+// Starts the game.
+//
+// Accepts an optional boolean parameter continueGame. If true, then the game
+// will start on the level stated by LAST LEVEL
+LadriGame.prototype.start = function(continueGame)
+{
+	var level = null;
+
+	if (continueGame)
+	{
+		if (!State.LAST_LEVEL) throw new Error("Cannot continue without State.LAST_LEVEL");
+		this.levelSelector.setLevelNumber(State.LAST_LEVEL);
+	}
+
+	level = this.levelSelector.nextLevel();
+	this.displayLevel(level);
+	this.startLoop();
+};
+
+// Sets up a new level so the user can start playing
+LadriGame.prototype.displayLevel = function(level)
 {
 	// Add the bricks
 	var bricks = level.createBricks(this);
@@ -70,6 +95,11 @@ LadriGame.prototype.startLevel = function(level)
 	}, level.secondsToIncrementBallSpeed * 1000);
 
 	this.level = level;
+
+	// Save for continue
+	State.LAST_LEVEL = this.levelSelector.getLevelNumber();
+
+	this.ball.reset();
 };
 
 // The game loop! good ol' times :D
@@ -161,7 +191,7 @@ LadriGame.prototype.loop = function()
 			if (this.pad.y < 15)
 			{
 				var level = this.levelSelector.nextLevel();
-				this.startLevel(level);
+				this.displayLevel(level);
 				this.pad.reset();
 				this.ball.reset();
 			}
@@ -242,16 +272,16 @@ LadriGame.prototype.drawHud = function()
 	context.font = "12pt rodusround";
 
 	// Draw Level
-	context.fillText("Level: " + this.levelSelector.getLevelNumber(), 10, 590);
+	context.fillText("Level: " + this.levelSelector.getLevelNumber(), 10, 582);
 
 	// Draw the score
-	context.fillText("Score: " + this.score, 140, 590);
+	context.fillText("Score: " + this.score, 140, 582);
 
 	// Draw lives
-	context.fillText("Lives: " + this.lives, 280, 590);
+	context.fillText("Lives: " + this.lives, 280, 582);
 
 	// Draw FPS
-	context.fillText("FPS: " + this.framesPerSecond.calculate(), 735, 590);
+	context.fillText("FPS: " + this.framesPerSecond.calculate(), 735, 582);
 };
 
 LadriGame.prototype.drawWon = function()
@@ -260,10 +290,10 @@ LadriGame.prototype.drawWon = function()
 
 	context.fillStyle = "rgb(255, 124, 163)";
 	context.font = "25pt rodusround";
-	context.fillText("Congratulations! You won! :D", 200, 100);
+	context.fillText("Congratulations! You won! :D", 200, 92);
 
 	context.font = "14pt rodusround";
-	context.fillText("Final score: " + this.score, 330, 225);
+	context.fillText("Final score: " + this.score, 330, 217);
 };
 
 LadriGame.prototype.drawOver = function()
@@ -273,17 +303,17 @@ LadriGame.prototype.drawOver = function()
 	// Green
 	context.fillStyle = "rgb(0, 255, 144)";
 	context.font = "20pt rodusround";
-	context.fillText("Game Over :(", 320, 320);
+	context.fillText("Game Over :(", 320, 312);
 
 	context.font = "14pt rodusround";
-	context.fillText("Final score: " + this.score, 330, 425);
+	context.fillText("Final score: " + this.score, 330, 417);
 };
 
 LadriGame.prototype.STATUS = { PLAYING: 1, LEVEL_WON: 2, WON: 3, LOST: 4 };
 
 // Gets the status of the game. Possible statuses are determined by STATUS hash
 LadriGame.prototype.getStatus = function()
-{
+{	
 	if (this.actors.length <= 2 && !this.levelSelector.hasNextLevel()) return this.STATUS.WON;
 	if (this.actors.length <= 2) return this.STATUS.LEVEL_WON;
 	if (this.lives < 0) return this.STATUS.LOST;

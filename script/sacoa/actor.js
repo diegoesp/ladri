@@ -127,3 +127,18 @@ Actor.prototype.isAtScreenBottom = function(game)
 	if (this.y >= game.height()) return true;
 	return false;
 };
+
+Actor.prototype.isMousePointerOn = function(game)
+{
+	var mouse = game.mouse;
+
+	if (!mouse) throw new Error("There's no mouse attached to game");
+
+	var map = mouse.map();
+	
+	if (map.x >= this.x && map.x <= this.xWidth())
+		if (map.y >= this.y && map.y <= this.yHeight())
+			return true;
+
+	return false;
+};

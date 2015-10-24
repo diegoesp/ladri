@@ -16,7 +16,7 @@ var Game = function(canvas)
 
 	// Input methods (player can use keyboard, mouse or touchscreen)
 	this.keyboard = new Keyboard();
-	this.mouse = new Mouse();
+	this.mouse = new Mouse(this);
 	this.touch = new Touch();
 
 	// Adjust canvas to fit present window...
@@ -27,6 +27,7 @@ var Game = function(canvas)
 
 	// Cache the 2D context
 	this.cachedContext = this.canvas.getContext("2d");
+	this.cachedContext.textBaseline = "top";
 };
 
 Game.prototype.width = function()
@@ -37,6 +38,16 @@ Game.prototype.width = function()
 Game.prototype.height = function()
 {
 	return this.canvas.height;
+};
+
+Game.prototype.scaledWidth = function()
+{
+	return Number.parseInt(this.canvas.style.width.replace("px", ""));
+};
+
+Game.prototype.scaledHeight = function()
+{
+	return Number.parseInt(this.canvas.style.height.replace("px", ""));
 };
 
 // Resizes the game in screen to the best possible size based on original
@@ -56,7 +67,7 @@ Game.prototype.context = function()
 
 Game.prototype.handleEvent = function(event)
 {
-	// Fills the keyboard status object
+	// Fills the action maps
 	switch(event.type)
 	{
 		case "keydown":

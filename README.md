@@ -13,6 +13,7 @@ use bitmaps, just vector drawing and colors.
 * Game scales to any possible screen resolution.
 * Sound effects
 * Levels and a simple level mapper to easily add new levels
+* Can continue on the last level once you lost.
 
 # Why?
 This is an exercise that i've prepared for giving a basic canvas HTML5 classroom session. It shows how easy is to use
@@ -34,8 +35,7 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Add options to the initial menu => initially I'd add "New game" and "Continue"
-* Gime both choices requestAnimationFrame and timer by tweaking the class
+* Debug the "invisible brick" bug in the level 03
+* Gime both choices requestAnimationFrame and timer by tweaking the game class
 * Add full screen mode
 * Add more levels
-* Fix the mouse clicking bug on the initial menu

@@ -12,9 +12,9 @@ Ball.prototype.constructor = Ball;
 
 Ball.prototype.reset = function()
 {
-	this.x = 380;
+	this.x = 420;
 	this.y = 480;
-	this.speedX = -3.5;
+	this.speedX = 3.5;
 	this.speedY = -3.5;
 };
 

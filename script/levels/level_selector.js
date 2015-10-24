@@ -34,3 +34,17 @@ LevelSelector.prototype.getLevelNumber = function()
 {
 	return this.levelNumber;
 };
+
+// Sets the number for the next level to be returned
+LevelSelector.prototype.setLevelNumber = function(levelNumber)
+{
+	if (levelNumber < 1) throw new Error("Invalid levelNumber " + levelNumber);
+	this.levelNumber = (levelNumber - 1);
+	this.reset();
+	
+	// Pop out previous levels so nextLevel returns the correct one
+	for (var i = 0; i < this.levelNumber; i++)
+	{
+		this.levels.pop();
+	}
+};

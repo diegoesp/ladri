@@ -39,6 +39,9 @@ Pad.prototype.move = function(game)
 	var mouseMap = game.mouse.map();
 	if (mouseMap.left) this.x -= this.speedX;
 	if (mouseMap.right) this.x += this.speedX;
+	// Cancel movement, so the pad does not keep moving all the time
+	mouseMap.left = false;
+	mouseMap.right = false;
 
 	var touchMap = game.touch.map();
 	if (touchMap.left) this.x -= this.speedX;

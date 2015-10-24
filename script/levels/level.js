@@ -4,7 +4,7 @@ var Level = function()
 	// Initial ball speed
 	this.ballSpeed = 3.5;
 	// Seconds to increment ball speed
-	this.secondsToIncrementBallSpeed = 15;
+	this.secondsToIncrementBallSpeed = 10;
 	// How much to increment ball speed
 	this.incrementBallSpeed = 1;
 	
