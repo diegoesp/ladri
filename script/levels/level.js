@@ -56,12 +56,12 @@ Level.prototype.createBricks = function(game)
 	var colors = Brick.colors();
 
 	var bricks = [];
-
-	for (var y = 0; y < 10; y++)
+	
+	for (var y = 0; y < 9; y++)
 	{
 		var color = colors.pop();
 
-		for(var x = 0; x < 10; x++)
+		for(var x = 0; x < 9; x++)
 		{
 			// Get the parameter at the brick map
 			var index = (y*9)+x;
@@ -69,7 +69,10 @@ Level.prototype.createBricks = function(game)
 
 			var brick = new Brick(game, xPos, yPos, color);
 			// Only add it if the map specifies so
-			if (code === "X") bricks.push(brick);
+			if (code === "X") 
+			{
+				bricks.push(brick);
+			}
 
 			// Next brick in line
 			xPos += (brick.width + 12.5);

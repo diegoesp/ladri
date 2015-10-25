@@ -53,7 +53,7 @@ var LadriGame = function(canvas)
 	// debugGame.onlyOneLevel();
 	// debugGame.makeFirstLevelSimple();
 	// debugGame.makeAllLevelsSimple();
-	// debugGame.jumpToLevel(3);
+	debugGame.jumpToLevel(3);
 };
 
 // Inherit from Game
@@ -83,8 +83,9 @@ LadriGame.prototype.start = function(continueGame)
 LadriGame.prototype.displayLevel = function(level)
 {
 	// Add the bricks
-	var bricks = level.createBricks(this);
+	var bricks = level.createBricks(this);	
 	this.actors = this.actors.concat(bricks);
+
 	// Set the initial ball speed
 	this.ball.setSpeed(level.ballSpeed);
 	// Set a timeout for ball speed increment

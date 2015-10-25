@@ -35,7 +35,7 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Debug the "invisible brick" bug in the level 03
+* Switch menu using the cursor
 * Gime both choices requestAnimationFrame and timer by tweaking the game class
 * Add full screen mode
 * Add more levels
