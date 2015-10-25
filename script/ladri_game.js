@@ -49,11 +49,13 @@ var LadriGame = function(canvas)
 
 	this.levelSelector = new LevelSelector();
 
-	var debugGame = new DebugGame(this);
+	// var debugGame = new DebugGame(this);
 	// debugGame.onlyOneLevel();
 	// debugGame.makeFirstLevelSimple();
 	// debugGame.makeAllLevelsSimple();
-	debugGame.jumpToLevel(3);
+	// debugGame.jumpToLevel(3);
+	// debugGame.godMode();
+	// debugGame.lighspeedBall(this);
 };
 
 // Inherit from Game
@@ -86,10 +88,12 @@ LadriGame.prototype.displayLevel = function(level)
 	var bricks = level.createBricks(this);	
 	this.actors = this.actors.concat(bricks);
 
-	// Set the initial ball speed
-	this.ball.setSpeed(level.ballSpeed);
-	// Set a timeout for ball speed increment
 	var ball = this.ball;
+	ball.reset();
+
+		// Set the initial ball speed
+	ball.setSpeed(level.ballSpeed);
+	// Set a timeout for ball speed increment
 	this.incrementSpeedInterval = window.setInterval(function() 
 	{
 		ball.incrementSpeed(level.incrementBallSpeed);
@@ -100,7 +104,7 @@ LadriGame.prototype.displayLevel = function(level)
 	// Save for continue
 	State.LAST_LEVEL = this.levelSelector.getLevelNumber();
 
-	this.ball.reset();
+	this.pad.reset();
 };
 
 // The game loop! good ol' times :D
@@ -193,8 +197,6 @@ LadriGame.prototype.loop = function()
 			{
 				var level = this.levelSelector.nextLevel();
 				this.displayLevel(level);
-				this.pad.reset();
-				this.ball.reset();
 			}
 
 			break;

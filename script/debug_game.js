@@ -39,7 +39,24 @@ DebugGame.prototype.jumpToLevel = function(levelNumber)
 	{
 		this.game.levelSelector.nextLevel();
 	}
+};
 
+DebugGame.prototype.godMode = function()
+{
+	Ball.prototype.isAtScreenBottom = function()
+	{
+		return false;
+	};
+};
+
+DebugGame.prototype.lighspeedBall = function(game)
+{
+	var levels = game.levelSelector.levels;
+
+	for (var i = 0; i < levels.length; i++)
+	{
+		levels[i].ballSpeed = 30;
+	}
 };
 
 DebugGame.prototype.getSimpleBrickMap = function()

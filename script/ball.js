@@ -66,4 +66,4 @@ Ball.prototype.setSpeed = function(speed)
 	// Add speed in absolute value
 	this.speedX = speed;
 	this.speedY = speed;
-}
+};
