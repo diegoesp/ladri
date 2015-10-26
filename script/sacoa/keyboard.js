@@ -15,22 +15,39 @@ var Keyboard = function()
 	this.map = {
 		cursorLeft: false,
 		cursorRight: false,
+		cursorUp: false,
+		cursorDown: false,
 		enter: false
 	};
 };
 
 Keyboard.prototype.keyUp = function(event)
 {
-	if (event.keyCode === this.codes.cursorLeft) this.map.cursorLeft = false;
-	if (event.keyCode === this.codes.cursorRight) this.map.cursorRight = false;
-	if (event.keyCode === this.codes.enter) this.map.enter = false;
+	this.fillKeyMap(false);
 };
 
 Keyboard.prototype.keyDown = function()
 {
-	if (event.keyCode === this.codes.cursorLeft) this.map.cursorLeft = true;
-	if (event.keyCode === this.codes.cursorRight) this.map.cursorRight = true;
-	if (event.keyCode === this.codes.enter) this.map.enter = true;
+	this.fillKeyMap(true);
+};
+
+// Private
+Keyboard.prototype.fillKeyMap = function(keyPressed)
+{
+	// This code does what is written below but iterating through keys so we do
+	// not need to extend it every time we add a new key to be considered
+	//
+	// if (event.keyCode === this.codes.cursorLeft) this.map.cursorLeft = true (or false);
+	var keyNames = Object.keys(this.codes);
+	for (var i = 0; i < keyNames.length; i++)
+	{
+		var keyName = keyNames[i];
+		var keyCode = this.codes[keyName];
+		if (event.keyCode === keyCode)
+		{
+			this.map[keyName] = keyPressed;
+		}
+	}
 };
 
 Keyboard.prototype.keyMap = function()

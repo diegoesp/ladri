@@ -22,9 +22,66 @@ var MenuGame = function(canvas)
 MenuGame.prototype = Object.create(Game.prototype);
 MenuGame.prototype.constructor = MenuGame;
 
+MenuGame.prototype.handleEvent = function(event)
+{
+	Game.prototype.handleEvent.call(this, event);
+
+	// Switch menues every time the user presses a cursor. We cannot use
+	// the keyboard map since it is too high def, switches too fast. Even
+	// orienting works best
+	if (event.type === "keyup")
+	{
+		if (event.keyCode === this.keyboard.codes.cursorUp || event.keyCode === this.keyboard.codes.cursorDown)
+		{
+			if (this.menuOptionNewGame.isSelected() && State.LAST_LEVEL)
+			{
+				this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
+				this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+			}
+			else
+			{
+				this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+				if (State.LAST_LEVEL)
+				{
+					this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
+				}
+			}
+		}
+	}
+};
+
 MenuGame.prototype.loop = function()
 {
-	if (this.keyboard.keyMap().enter || this.mouse.map().leftClick)
+	// Logic for menues: determine how each menu is drawn
+	if (State.LAST_LEVEL)
+	{
+		if (this.menuOptionContinue.isMousePointerOn(this))
+		{
+			this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+			this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
+		}
+	}
+	else
+	{
+		this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);
+	}
+			
+	if (this.menuOptionNewGame.isMousePointerOn(this)) 
+	{
+		this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
+		if (State.LAST_LEVEL)
+		{
+			this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
+		}
+		else
+		{
+			this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);	
+		}
+	}
+
+	// Execute the action if the menu is clicked
+	var keyMap = this.keyboard.keyMap();
+	if (keyMap.enter || this.mouse.map().leftClick)
 	{
 		if (this.menuOptionNewGame.isSelected())
 		{
@@ -48,20 +105,6 @@ MenuGame.prototype.loop = function()
 	context.font = "60pt rodusround";
 	context.fillStyle = "rgb(255, 100, 100)";
 	context.fillText("LADRI", 280, 140);
-
-	if (State.LAST_LEVEL)
-		this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
-	else
-		this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);
-
-	this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
-
-	if (State.LAST_LEVEL)
-		if (this.menuOptionContinue.isMousePointerOn(this))
-			this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
-	
-	if (this.menuOptionNewGame.isMousePointerOn(this)) 
-		this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
 
 	this.menuOptionContinue.draw();
 	this.menuOptionNewGame.draw();

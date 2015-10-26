@@ -35,7 +35,6 @@ Use your keyboard, mouse or touch screen to move the pad.
 
 # Upcoming features
 
-* Switch menu using the cursor
-* Gime both choices requestAnimationFrame and timer by tweaking the game class
+* Give both choices requestAnimationFrame and timer by tweaking the game class
 * Add full screen mode
 * Add more levels
