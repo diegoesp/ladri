@@ -1,7 +1,9 @@
 // Base class for games. Runs the game loop. To implement,
 //
-// Supply a canvas for the constructor
-// Implement loop() that is called to execute the game loop.
+// 1) Must supply a canvas for the constructor
+// 2) May supply an optional argument options that contains:
+// 		.animationMethod: one of the two possible values from Game.ANIMATION_METHOD
+// 3) Implement loop() that is called to execute the game loop.
 //
 // Instance variables:
 //
@@ -10,7 +12,7 @@
 // mouse: a Mouse controller, so we know it is moved inside the game loop
 // touch: a Touch controller, so we know it is used inside the game loop
 // timer: holds the setInterval timer for the game loop
-var Game = function(canvas)
+var Game = function(canvas, options)
 {
 	this.canvas = canvas;
 
@@ -28,7 +30,20 @@ var Game = function(canvas)
 	// Cache the 2D context
 	this.cachedContext = this.canvas.getContext("2d");
 	this.cachedContext.textBaseline = "top";
+
+	this.animationMethod = Game.ANIMATION_METHOD.TIMER;
+	if (options)
+	{
+		if (options.animationMethod)
+		{
+			if (!Game.ANIMATION_METHOD[options.animationMethod]) throw new Error("animationMethod not valid. Use Game.ANIMATION_METHOD");
+
+			this.animationMethod = options.animationMethod;
+		}
+	}
 };
+
+Game.ANIMATION_METHOD = { TIMER: "TIMER", ANIMATION_FRAME: "ANIMATION_FRAME" };
 
 Game.prototype.width = function()
 {
@@ -104,9 +119,14 @@ Game.prototype.startLoop = function()
 	var game = this;
 
 	// Uncomment to use a timer to draw
-	this.timer = window.setInterval(function() { game.loop(); }, 15);
-	// Uncomment to use  requestAnimationFrame
-	// window.requestAnimationFrame(function() { game.loop(); });
+	if (this.animationMethod === Game.ANIMATION_METHOD.TIMER)
+	{
+		this.timer = window.setInterval(function() { game.loop(); }, 15);
+	}
+	else
+	{
+		this.animationFrameRequest = window.requestAnimationFrame(function() { game.requestAnimationFrameLoop(); });
+	}
 
 	this.canvas.parentNode.addEventListener("keydown", this, true);
 	this.canvas.parentNode.addEventListener("keyup", this, true);
@@ -119,17 +139,27 @@ Game.prototype.startLoop = function()
 // physics and no more drawing. The game stops.
 Game.prototype.stopLoop = function()
 {
-	// Uncomment to use a timer to draw
-	window.clearInterval(this.timer);
+	if (this.animationMethod === Game.ANIMATION_METHOD.TIMER)
+	{
+		window.clearInterval(this.timer);
+	}
+	else
+	{
+		window.cancelAnimationFrame(this.animationFrameRequest);
+	}
 
 	this.canvas.parentNode.removeEventListener("keydown", this);
 	this.canvas.parentNode.removeEventListener("keyup", this);
 	this.canvas.parentNode.removeEventListener("mousemove", this);
 	this.canvas.parentNode.removeEventListener("click", this);
 	this.canvas.parentNode.removeEventListener("touchmove", this);
+};
 
-	// Uncomment to use requestAnimationFrame
-	// window.cancelAnimationFrame();
+Game.prototype.requestAnimationFrameLoop = function() 
+{
+	this.loop();
+	var game = this;
+	this.animationFrameRequest = window.requestAnimationFrame(function() { game.requestAnimationFrameLoop(); });
 };
 
 // Please implement

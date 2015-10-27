@@ -19,7 +19,7 @@
 var LadriGame = function(canvas)
 {
 	// Call parent constructor
-	Game.call(this, canvas);
+	Game.call(this, canvas, options = { animationMethod: Game.ANIMATION_METHOD.TIMER });
 	
 	this.score = 0;
 	this.lives = 2;
@@ -49,7 +49,7 @@ var LadriGame = function(canvas)
 
 	this.levelSelector = new LevelSelector();
 
-	// var debugGame = new DebugGame(this);
+	// debugGame = new DebugGame(this);
 	// debugGame.onlyOneLevel();
 	// debugGame.makeFirstLevelSimple();
 	// debugGame.makeAllLevelsSimple();

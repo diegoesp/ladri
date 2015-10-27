@@ -46,8 +46,8 @@ MenuGame.prototype.handleEvent = function(event)
 					this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
 				}
 			}
-		}
-	}
+		} // keyCode
+	}	// keyup
 };
 
 MenuGame.prototype.loop = function()
