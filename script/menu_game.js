@@ -15,8 +15,12 @@ var MenuGame = function(canvas)
 
 	this.lastLevel = null;
 
-	this.menuOptionContinue = new MenuOption("Continue", 344, 320, this);
-	this.menuOptionNewGame = new MenuOption("New game", 335, 390, this);
+	var menuOptionContinue = new MenuOption("Continue", 344, 320, this.continueGame);
+	var menuOptionNewGame = new MenuOption("New game", 335, 390, this.newGame);
+	
+	this.menu = new Menu(this);
+	this.menu.addMenuOption(menuOptionContinue);
+	this.menu.addMenuOption(menuOptionNewGame);
 };
 
 MenuGame.prototype = Object.create(Game.prototype);
@@ -33,66 +37,21 @@ MenuGame.prototype.handleEvent = function(event)
 	{
 		if (event.keyCode === this.keyboard.codes.cursorUp || event.keyCode === this.keyboard.codes.cursorDown)
 		{
-			if (this.menuOptionNewGame.isSelected() && State.LAST_LEVEL)
-			{
-				this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
-				this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
-			}
-			else
-			{
-				this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
-				if (State.LAST_LEVEL)
-				{
-					this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
-				}
-			}
-		} // keyCode
-	}	// keyup
+			this.menu.highlightNext();
+		}
+	}
 };
 
 MenuGame.prototype.loop = function()
 {
-	// Logic for menues: determine how each menu is drawn
-	if (State.LAST_LEVEL)
-	{
-		if (this.menuOptionContinue.isMousePointerOn(this))
-		{
-			this.menuOptionContinue.setStatus(MenuOption.STATUS.HIGHLIGHTED);
-			this.menuOptionNewGame.setStatus(MenuOption.STATUS.NORMAL);
-		}
-	}
-	else
-	{
-		this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);
-	}
-			
-	if (this.menuOptionNewGame.isMousePointerOn(this)) 
-	{
-		this.menuOptionNewGame.setStatus(MenuOption.STATUS.HIGHLIGHTED);
-		if (State.LAST_LEVEL)
-		{
-			this.menuOptionContinue.setStatus(MenuOption.STATUS.NORMAL);
-		}
-		else
-		{
-			this.menuOptionContinue.setStatus(MenuOption.STATUS.DISABLED);	
-		}
-	}
+	this.menu.hightlightOnMousePointer();
 
 	// Execute the action if the menu is clicked
 	var keyMap = this.keyboard.keyMap();
 	if (keyMap.enter || this.mouse.map().leftClick)
 	{
-		if (this.menuOptionNewGame.isSelected())
-		{
-			this.startGame();
-			return;
-		}
-		if (this.menuOptionContinue.isSelected())
-		{
-			this.startGame(true);
-			return;
-		}
+		var menuOption = this.menu.getHighlightedMenuOption();
+		if (menuOption) menuOption.execute(this);
 	}
 
 	var context = this.context();	
@@ -106,8 +65,17 @@ MenuGame.prototype.loop = function()
 	context.fillStyle = "rgb(255, 100, 100)";
 	context.fillText("LADRI", 280, 140);
 
-	this.menuOptionContinue.draw();
-	this.menuOptionNewGame.draw();
+	this.menu.draw();
+};
+
+MenuGame.prototype.continueGame = function(game)
+{
+	game.startGame(true);
+};
+
+MenuGame.prototype.newGame = function(game)
+{
+	game.startGame();
 };
 
 MenuGame.prototype.startGame = function(continueGame)

@@ -3,6 +3,7 @@
 // 1) Must supply a canvas for the constructor
 // 2) May supply an optional argument options that contains:
 // 		.animationMethod: one of the two possible values from Game.ANIMATION_METHOD
+//		.fullScreen: if true, then the game will require full screen
 // 3) Implement loop() that is called to execute the game loop.
 //
 // Instance variables:
