@@ -13,14 +13,17 @@ var MenuGame = function(canvas)
 	audio.loop = true;
 	audio.play();
 
-	this.lastLevel = null;
-
 	var menuOptionContinue = new MenuOption("Continue", 344, 320, this.continueGame);
 	var menuOptionNewGame = new MenuOption("New game", 335, 390, this.newGame);
 	
 	this.menu = new Menu(this);
 	this.menu.addMenuOption(menuOptionContinue);
 	this.menu.addMenuOption(menuOptionNewGame);
+
+	if (!State.LAST_LEVEL)
+	{
+		menuOptionContinue.setState(MenuOption.STATE.DISABLED);
+	}
 };
 
 MenuGame.prototype = Object.create(Game.prototype);
@@ -44,7 +47,7 @@ MenuGame.prototype.handleEvent = function(event)
 
 MenuGame.prototype.loop = function()
 {
-	this.menu.hightlightOnMousePointer();
+	this.menu.highlightOnMousePointer();
 
 	// Execute the action if the menu is clicked
 	var keyMap = this.keyboard.keyMap();

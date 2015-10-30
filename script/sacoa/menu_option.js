@@ -61,6 +61,13 @@ MenuOption.prototype.isHighlighted = function()
 	return false;
 };
 
+// Determines if the menu option is disabled
+MenuOption.prototype.isDisabled = function()
+{
+	if (this.state === MenuOption.STATE.DISABLED) return true;
+	return false;
+};
+
 // Executes the assigned callback for the menu option
 MenuOption.prototype.execute = function(game)
 {
