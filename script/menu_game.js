@@ -33,9 +33,8 @@ MenuGame.prototype.handleEvent = function(event)
 {
 	Game.prototype.handleEvent.call(this, event);
 
-	// Switch menues every time the user presses a cursor. We cannot use
-	// the keyboard map since it is too high def, switches too fast. Even
-	// orienting works best
+	// Switch menues every time the user presses a cursor. We cannot use the keyboard map since 
+	// it is too high def, switches too fast. Events works better in this case.
 	if (event.type === "keyup")
 	{
 		if (event.keyCode === this.keyboard.codes.cursorUp || event.keyCode === this.keyboard.codes.cursorDown)

@@ -32,8 +32,3 @@ Use your keyboard, mouse or touch screen to move the pad.
 # Credits
 
 * I'm using an awesome song for the intro created by Schematist (https://www.facebook.com/schematist). Allowed to use for non-commercial projects.
-
-# Upcoming features
-
-* Add full screen mode
-* Add more levels
