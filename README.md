@@ -22,7 +22,7 @@ HTML5 "primitives" to create simple games.
 It is also a reference implementation for a simple HTML5 game framework called "Sacoa"
 
 # How to play
-Just pull the repository into a directory and open index.html using a browser. Simple! don't you just love HTML?
+Just pull the repository into a directory and open index.html using a browser. Simple! don't you just love web techs?
 Use your keyboard, mouse or touch screen to move the pad.
 
 # Other considerations
