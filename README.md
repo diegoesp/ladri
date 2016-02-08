@@ -1,7 +1,5 @@
 # Sacoa
 
-## Intro
-
 A basic 2D game framework for creating HTML5 / CSS3 / Javascript games. It holds
 a number of javascript prototypes that can be extended to implement our
 own game "classes".
@@ -35,6 +33,10 @@ Use the audio_library.js prototype to play sounds and music
 * Show frames per second onscreen using frames_per_second.js
 * Scale your game to any resolution using screen_scaler.js
 * Animate both using a timer and requestAnimationFrame depending on your convenience
+
+## How to use
+
+Just add it as a submodule or a subtree (subtree should be enough) to your src folder
 
 ## Implementation references
 
