@@ -8,7 +8,7 @@ own game "classes".
 
 ## Reference
 
-### Base class from the game
+### Base class for a game
 
 Implement the game.js prototype to create your game. It gives you a structure
 to manage the basic game loop, drawing and other goodies.
